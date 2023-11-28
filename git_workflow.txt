@@ -1,0 +1,21 @@
+### Skapa ny branch, pusha upp till github och skapa pull-request
+
+1. I master-branch för att säkerställa senaste versionen > git pull
+
+2. Skapa en ny branch > git checkout -b <branch name>
+(Vi skulle kunna köra att branchnamnet börjar med ens egna initialer. Som "al-bla-bla-bla")
+
+3. Gör sina ändringar.
+
+4. Fyll i commit-meddelande och committa till branchen.
+
+### I GITHUB
+
+5. Öppna en pull-request (Compare and pull-request) som gul ruta
+
+6. Skriv i någon kommentar om vad som lagts till och klicka på Reviewers till höger.
+
+Sen är det dags för att den andra att göra en review på den och godkänna
+Efter det är det bara att merga.
+
+

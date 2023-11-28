@@ -7,14 +7,7 @@
 
 3. Gör sina ändringar.
 
-4. git add .
-
-5. git commit -m "commit-namn, det här gjorde jag typ osv"
-
-6. git push
-
-7. Första gången man gör en push efter att ha skapat branchen dyker detta upp "git push --set-upstream origin al-first-branch".
-Kopiera texten och klistra in i terminalen, och kör. Då skapas en ny branch.
+4. Fyll i commit-meddelande och committa till branchen.
 
 ### I GITHUB
 

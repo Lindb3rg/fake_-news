@@ -1,0 +1,20 @@
+### Skapa ny branch, pusha upp till github och skapa pull-request
+
+1. I master-branch för att säkerställa senaste versionen > git pull
+
+2. Skapa en ny branch > git checkout -b <branch name>
+(Vi skulle kunna köra att branchnamnet börjar med ens egna initialer. Som "al-bla-bla-bla")
+
+3. Gör sina ändringar.
+
+4. git add .
+
+5. git commit -m "commit-namn, det här gjorde jag typ osv"
+
+6. git push
+
+7. Första gången man gör en push efter att ha skapat branchen dyker detta upp "git push --set-upstream origin al-first-branch".
+Kopiera texten och klistra in i terminalen, och kör. Då skapas en ny branch.
+
+### I GITHUB
+

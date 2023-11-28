@@ -15,4 +15,7 @@
 
 6. Skriv i någon kommentar om vad som lagts till och klicka på Reviewers till höger.
 
+Sen är det dags för att den andra att göra en review på den och godkänna
+Efter det är det bara att merga.
+
 

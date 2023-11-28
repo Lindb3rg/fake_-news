@@ -11,3 +11,8 @@
 
 ### I GITHUB
 
+5. Öppna en pull-request (Compare and pull-request) som gul ruta
+
+6. Skriv i någon kommentar om vad som lagts till och klicka på Reviewers till höger.
+
+

@@ -71,6 +71,6 @@ def label_text(original_text):
     binary_predictions = (predictions >= threshold).astype(int)
 
     # Create dict with prediction
-    dict = {"Headline": original_text, "Outcome": ["predicted as fake" if pred == 1 else "predicted as real" for pred in binary_predictions]}
+    dict = {"Headline": original_text, "Prediction": ["Fake" if pred == 1 else "True" for pred in binary_predictions]}
     
     return dict

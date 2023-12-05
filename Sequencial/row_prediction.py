@@ -9,7 +9,8 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 import string
 import spacy
 import pickle
- 
+
+
 # Download NLTK resources
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -25,12 +26,12 @@ nlp = spacy.load("en_core_web_sm")
 maxlen = 75
 
 # load model
-loaded_model = load_model("trained_models/keras_model.h5")
+loaded_model = load_model("Sequencial/trained_models/keras_model.h5")
 
 loaded_tokenizer = Tokenizer()
 
 # Load the tokenizer from the file
-with open('tokenizer/tokenizer.pkl', 'rb') as tokenizer_file:
+with open('Sequencial/tokenizer/tokenizer.pkl', 'rb') as tokenizer_file:
     loaded_tokenizer = pickle.load(tokenizer_file)
 
 
@@ -62,15 +63,40 @@ def preprocess_text(text):
 
 
 def label_text(original_text):
-    preprocessed_texts = preprocess_text(original_text)
+    if not isinstance(original_text, list):
+        original_text = [original_text]
+    
+    
+    
+    preprocessed_texts = [preprocess_text(i) for i in original_text]
     new_sequences = loaded_tokenizer.texts_to_sequences(preprocessed_texts)
     new_padded_sequence = pad_sequences(new_sequences, maxlen=maxlen)
+
     predictions = loaded_model.predict(new_padded_sequence)
     
     threshold = 0.5
     binary_predictions = (predictions >= threshold).astype(int)
+    
 
     # Create dict with prediction
-    dict = {"Headline": original_text, "Prediction": ["Fake" if pred == 1 else "True" for pred in binary_predictions]}
+    if binary_predictions == 1:
+        # dict = {"Headline": original_text, "Prediction": "Fake"}
+        # print(dict)
+        # return dict
+        return "Fake"
+    # dict = {"Headline": original_text, "Prediction": "True"}
+    # print(dict)
+    return "True"
     
-    return dict
+
+
+
+
+
+
+
+
+
+
+
+# result = label_text(text)

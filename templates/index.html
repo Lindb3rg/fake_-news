@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" type="text/css" />
+    <title>FakeNews Checker</title>
+   
+</head>
+<body>
+    <header>
+        <h1>FakeNews Checker</h1>
+        <nav>
+            <a href="#">Länk 1</a>
+            <a href="#">Länk 2</a>
+            <a href="#">Länk 3</a>
+        </nav>
+    </header>
+
+    <main>
+        <form id="myForm">
+            <label for="textArea"><h4>Write or paste your text here:</h4></label>
+            <textarea id="textArea" placeholder="Enter Text..." name="textArea" required></textarea>
+
+            <div class="checkbox-group">
+                <label for="checkbox1">
+                    <input type="checkbox" id="checkbox1" name="checkbox1">
+                    Sequential Model
+                </label>
+
+                <label for="checkbox2">
+                    <input type="checkbox" id="checkbox2" name="checkbox2">
+                    SVM Model
+                </label>
+
+                <label for="checkbox3">
+                    <input type="checkbox" id="checkbox3" name="checkbox3">
+                    Logistic Regression Model
+                </label>
+
+                <label for="checkbox4">
+                    <input type="checkbox" id="checkbox4" name="checkbox4">
+                    All Models
+                </label>
+            </div>
+
+            <input type="submit" value="Skicka">
+        </form>
+    </main>
+    <script src="{{ url_for('static', filename='js/json_main.js') }}"></script>
+</body>
+</html>

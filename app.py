@@ -19,6 +19,11 @@ app = Flask(__name__)
 
 fixed_text = "All vegetarian Sanatan Dharmis only need little care about Social Distancing and enjoy long healthy life."
 
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    return render_template("index.html")
+    
+
 @app.route('/api/sequential/predict', methods=['GET', 'POST'])
 def sequential_predict_text():
     if request.method == 'POST':

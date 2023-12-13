@@ -4,5 +4,6 @@ COPY . /app/
 COPY ./requirements.txt /app/requirements.txt
 RUN python -m pip install --upgrade pip
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt
-EXPOSE 5000
-CMD python ./app.py
+CMD gunicorn -b 0.0.0.0:$PORT app:app
+
+

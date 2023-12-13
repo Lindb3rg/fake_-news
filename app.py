@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, render_template, request
 # from Sequencial.row_prediction import label_text
 from SVM.row_prediction_svm import svm_label_text
+import os
 
 app = Flask(__name__)
-
+port = int(os.environ.get('PORT', 5000))
 
 
 
@@ -58,6 +59,6 @@ def svm_predict_text():
     
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int("5000"), debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
 
     

@@ -10,7 +10,7 @@ body::before {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    opacity: 0.7;
+    opacity: 0.9;
     z-index: -1;
 }
 
@@ -18,7 +18,6 @@ body {
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    opacity: 0.7;
 }
 
 header {
@@ -70,6 +69,8 @@ textarea {
     resize: vertical;
     opacity: 0.7;
     border-radius: 10px;
+    padding-left: 20px;
+    padding-top: 10px;
 }
 
 .checkbox-group {
@@ -87,7 +88,7 @@ input[type="checkbox"] {
 input[type="submit"] {
     background-color: #4CAF50;
     color: white;
-    padding: 20px 40px; /* Increased padding for submit button */
+    padding: 20px 100px; /* Increased padding for submit button */
     border: none;
     cursor: pointer;
     margin-top: 20px; /* Increased margin for submit button */
@@ -104,6 +105,78 @@ output {
 textarea::placeholder {
     font-weight: bold; /* Set placeholder text to bold */
     color: black;
-    padding-left: 10px;
+    padding-left: 20px;
     font-size: larger;
+    padding-top: 10px;
 }
+
+
+
+
+
+.checkboxes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjust as needed for spacing between checkboxes */
+    margin-top: 20px;
+    align-items: center;
+    text-align: left;
+}
+
+
+
+.checkbox-wrapper-62 {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-wrapper-62 input[type="radio"] {
+    visibility: hidden;
+    display: none;
+}
+
+.checkbox-wrapper-62 *,
+.checkbox-wrapper-62 ::after,
+.checkbox-wrapper-62 ::before {
+    box-sizing: border-box;
+}
+
+.checkbox-wrapper-62 {
+    position: relative;
+    overflow: hidden;
+}
+
+.checkbox-wrapper-62 .check {
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+}
+
+.checkbox-wrapper-62 :hover {
+    cursor: pointer;
+}
+
+.checkbox-wrapper-62 .label {
+    display: inline-block;
+    width: 215px; /* Fixed width for the labels */
+    margin-left: 10px; /* Adjust as needed for spacing between checkbox and label */
+}
+
+.checkbox-wrapper-62 .label svg {
+    vertical-align: middle;
+}
+
+.checkbox-wrapper-62 .path1 {
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+    transition: .5s all;
+    
+}
+
+.checkbox-wrapper-62 .check:checked + .label svg g path {
+    stroke-dashoffset: 0;
+
+}
+
+  
+

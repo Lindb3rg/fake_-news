@@ -42,7 +42,7 @@ def prediction_text():
         return render_template("index.html", data=data, table=True)
 
 
-@app.route('/api/sequencial/predict', methods=['GET', 'POST'])
+@app.route('/api/sequential/predict', methods=['GET', 'POST'])
 def sequential_predict_text():
     if request.method == 'POST':
         # Get the text from the POST request

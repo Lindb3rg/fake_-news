@@ -5,6 +5,8 @@ import spacy
 import string
 import joblib
 
+from links import link_svm, link_tfidf
+
 
 # Download NLTK resources
 nltk.download('punkt')
@@ -16,12 +18,9 @@ spacy.cli.download("en_core_web_sm")
 # Load spaCy model
 nlp = spacy.load('en_core_web_sm')
 
-file_path_svm = 'C:\\Users\\soder\\fake_-news\\SVM\\svm_model.joblib'
 
-file_path_vect = 'C:\\Users\\soder\\fake_-news\SVM\\tfidf_vectorizer.joblib'
-
-loaded_tfidf_vectorizer = joblib.load(file_path_vect)
-loaded_svm_model = joblib.load(file_path_svm)
+loaded_tfidf_vectorizer = joblib.load(link_tfidf)
+loaded_svm_model = joblib.load(link_svm)
 
 def svm_preprocess_text(text, use_lemmatization=True):
     # Lowercasing

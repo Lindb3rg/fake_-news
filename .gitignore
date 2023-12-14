@@ -8,3 +8,4 @@ __pycache__
 Sequencial/__pycache__
 SVM/__pycache__
 link.py
+.env

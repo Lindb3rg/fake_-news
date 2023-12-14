@@ -4,8 +4,16 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 import spacy
 import string
 import joblib
+from dotenv import load_dotenv
+import os
 
-from links import link_svm, link_tfidf
+load_dotenv()
+
+SVM_VECTORIZER_LINK = os.environ.get('SVM_VECTORIZER_LINK')
+SVM_MODEL_LINK = os.environ.get('SVM_MODEL_LINK')
+
+# from links import link_svm, link_tfidf
+
 
 
 # Download NLTK resources
@@ -20,8 +28,8 @@ nlp = spacy.load('en_core_web_sm')
 
 
 
-loaded_tfidf_vectorizer = joblib.load(link_tfidf)
-loaded_svm_model = joblib.load(link_svm)
+loaded_tfidf_vectorizer = joblib.load(SVM_VECTORIZER_LINK)
+loaded_svm_model = joblib.load(SVM_MODEL_LINK)
 
 
 def svm_preprocess_text(text, use_lemmatization=True):

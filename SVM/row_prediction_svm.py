@@ -62,12 +62,12 @@ def svm_label_text(original_text):
     threshold = 0.5
     binary_predictions = (predictions >= threshold).astype(int)
     
+    list_of_predictions = []
     # Create dict with prediction
-    if binary_predictions == 1:
-        # dict = {"Headline": original_text, "Prediction": "Fake"}
-        # print(dict)
-        # return dict
-        return "Fake"
-    # dict = {"Headline": original_text, "Prediction": "True"}
-    # print(dict)
-    return "True"
+    for i in binary_predictions:
+        if i == 1:
+            list_of_predictions.append("Fake")
+        else:
+            list_of_predictions.append("True")
+
+    return list_of_predictions

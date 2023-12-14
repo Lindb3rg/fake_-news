@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, render_template, request
 from Sequencial.row_prediction import label_text
 from SVM.row_prediction_svm import svm_label_text
+import os
 
 app = Flask(__name__)
-
+port = int(os.environ.get('PORT', 5000))
 
 
 
@@ -18,6 +19,7 @@ app = Flask(__name__)
 
 
 fixed_text = "All vegetarian Sanatan Dharmis only need little care about Social Distancing and enjoy long healthy life."
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -57,7 +59,7 @@ def sequential_predict_text():
         # Render an HTML page for GET requests
         predict_text = label_text(fixed_text)
         return jsonify({"Original Text": fixed_text, "Sequential Prediction Result": predict_text})
-    
+
 
 @app.route('/api/svm/predict', methods=['GET', 'POST'])
 def svm_predict_text():
@@ -79,6 +81,6 @@ def svm_predict_text():
     
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=port, debug=True)
 
     

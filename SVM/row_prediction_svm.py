@@ -19,8 +19,10 @@ spacy.cli.download("en_core_web_sm")
 nlp = spacy.load('en_core_web_sm')
 
 
+
 loaded_tfidf_vectorizer = joblib.load(link_tfidf)
 loaded_svm_model = joblib.load(link_svm)
+
 
 def svm_preprocess_text(text, use_lemmatization=True):
     # Lowercasing

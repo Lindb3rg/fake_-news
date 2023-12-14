@@ -1,0 +1,228 @@
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('/static/images/fake-news-background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    opacity: 0.9;
+    z-index: -1;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: black;
+    color: white;
+    padding: 20px; /* Increased padding for header */
+    display: flex;
+    justify-content: space-between; /* Align items to the edges */
+    align-items: center; /* Center items vertically in the flex container */
+}
+h1 {
+    margin: 0; /* Remove default margin for h1 */
+    text-align: left; /* Align h1 to the left */
+    color:steelblue;
+}
+
+nav {
+    display: flex;
+    align-items: center; /* Center items vertically in the flex container */
+}
+
+nav a {
+    color:steelblue;
+    text-decoration: none;
+    font-size: 18px; /* Increased font size for navigation links */
+    margin-right: 30px; /* Add space between the links */
+}
+
+main {
+    padding: 40px; /* Increased padding for main content */
+    text-align: center;
+    color: white;
+}
+
+form {
+    margin-top: 30px; /* Increased margin for form */
+}
+
+label {
+    display: block;
+    margin-bottom: 10px; /* Increased margin for labels */
+    color: black;
+    font-size: 18px; /* Increased font size for labels */
+}
+
+textarea {
+    width: 60%; /* Decreased width of textarea */
+    height: 100px;
+    resize: vertical;
+    opacity: 0.7;
+    border-radius: 10px;
+    padding-left: 20px;
+    padding-top: 10px;
+}
+
+.checkbox-group {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px; /* Increased margin for checkbox group */
+    margin-top: 30px;
+}
+
+input[type="checkbox"] {
+    transform: scale(2); /* Increased scale of checkboxes */
+    margin: 0 10px; /* Increased margin for checkboxes */
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px 100px; /* Increased padding for submit button */
+    border: none;
+    cursor: pointer;
+    margin-top: 20px; /* Increased margin for submit button */
+}
+
+output {
+    margin-top: 30px; /* Increased margin for output */
+    display: block;
+    background-color: #ddd;
+    padding: 20px; /* Increased padding for output */
+    font-size: 18px; /* Increased font size for output */
+}
+
+textarea::placeholder {
+    font-weight: bold; /* Set placeholder text to bold */
+    color: black;
+    padding-left: 20px;
+    font-size: larger;
+    padding-top: 10px;
+}
+
+
+
+
+
+.checkboxes-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Adjust as needed for spacing between checkboxes */
+    margin-top: 20px;
+    align-items: center;
+    text-align: left;
+}
+
+
+
+.checkbox-wrapper-62 {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-wrapper-62 input[type="radio"] {
+    visibility: hidden;
+    display: none;
+}
+
+.checkbox-wrapper-62 *,
+.checkbox-wrapper-62 ::after,
+.checkbox-wrapper-62 ::before {
+    box-sizing: border-box;
+}
+
+.checkbox-wrapper-62 {
+    position: relative;
+    overflow: hidden;
+}
+
+.checkbox-wrapper-62 .check {
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+}
+
+.checkbox-wrapper-62 :hover {
+    cursor: pointer;
+}
+
+.checkbox-wrapper-62 .label {
+    display: inline-block;
+    width: 215px; /* Fixed width for the labels */
+    margin-left: 10px; /* Adjust as needed for spacing between checkbox and label */
+}
+
+.checkbox-wrapper-62 .label svg {
+    vertical-align: middle;
+}
+
+.checkbox-wrapper-62 .path1 {
+    stroke-dasharray: 400;
+    stroke-dashoffset: 400;
+    transition: .5s all;
+    
+}
+
+.checkbox-wrapper-62 .check:checked + .label svg g path {
+    stroke-dashoffset: 0;
+
+}
+
+
+.prediction_list {
+    color: black;
+    text-align: left; /* Align the text inside the list items to the left */
+    margin: auto;     /* Horizontally center the div */
+    max-width: 600px; /* Set a maximum width if desired */
+}
+
+.prediction_list ol {
+    margin: 0;      /* Remove default margin */
+    padding: 0;     /* Remove default padding */
+    list-style-position: inside;  /* Place numbers inside the list items */
+}
+
+.prediction_list li {
+    margin-bottom: 5px;  /* Adjust the margin between list items */
+}
+
+.table-container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Add this property to enable vertical scrolling */
+    max-height: 400px; /* Set the maximum height for scrolling */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    color: black;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tbody tr:hover {
+    background-color: #f5f5f5;
+}

@@ -1,4 +1,7 @@
 /env
 /env3.10
 /requirements_4
-/__pycache__
+**/__pycache__/
+Sequencial/__pycache__/__init__.cpython-311.pyc
+links.py
+__pycache__

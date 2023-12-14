@@ -1,0 +1,94 @@
+{% extends "base_template.html" %}
+{% block title %}FakeNews Checker{% endblock %}
+    
+
+{% block content %}
+<form id="myForm" method="POST" action="/prediction">
+    <label for="textArea"><h3>Write or paste your text here:</h3></label>
+    <textarea id="textArea" placeholder="Enter Text..." name="textArea" required></textarea>
+
+    <div class="checkboxes-container">
+        <div class="checkbox-wrapper-62">
+            <input type="radio" class="check" name="model" id="check1-62"/>
+            <label for="check1-62" class="label">
+                <svg width="43" height="43" viewbox="0 0 90 90">
+                    <rect x="30" y="20" width="50" height="50" stroke="black" fill="none" />
+                    <g transform="translate(0,-952.36218)">
+                        <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                        <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                    </g>
+                </svg>
+                <span><i class="fa-solid fa-robot"></i> Sequential Model</span>
+            </label>
+        </div>
+
+        <div class="checkbox-wrapper-62">
+            <input type="radio" class="check" name="model" id="check2-62"/>
+            <label for="check2-62" class="label">
+                <svg width="43" height="43" viewbox="0 0 90 90">
+                    <rect x="30" y="20" width="50" height="50" stroke="black" fill="none" />
+                    <g transform="translate(0,-952.36218)">
+                        <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                        <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                    </g>
+                </svg>
+                <span><i class="fa-solid fa-robot"></i> Logistic Model</span>
+            </label>
+        </div>
+
+        <div class="checkbox-wrapper-62">
+            <input type="radio" class="check" name="model" id="check3-62"/>
+            <label for="check3-62" class="label">
+                <svg width="43" height="43" viewbox="0 0 90 90">
+                    <rect x="30" y="20" width="50" height="50" stroke="black" fill="none" />
+                    <g transform="translate(0,-952.36218)">
+                        <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                        <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                    </g>
+                </svg>
+                <span><i class="fa-solid fa-robot"></i> SVM Model</span>
+            </label>
+        </div>
+
+        <div class="checkbox-wrapper-62">
+            <input type="radio" class="check" name="model" id="check4-62"/>
+            <label for="check4-62" class="label">
+                <svg width="43" height="43" viewbox="0 0 90 90">
+                    <rect x="30" y="20" width="50" height="50" stroke="black" fill="none" />
+                    <g transform="translate(0,-952.36218)">
+                        <path d="m 13,983 c 33,6 40,26 55,48 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                        <path d="M 75,970 C 51,981 34,1014 25,1031 " stroke="black" stroke-width="3" class="path1" fill="none" />
+                    </g>
+                </svg>
+                <span><i class="fa-solid fa-robot"></i> All Models</span>
+            </label>
+        </div>
+
+    </div>
+        
+    <input type="submit" value="Click To Predict!">
+
+</form>
+
+{% if table %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Text</th>
+                        <th>Prediction</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for text, prediction in data %}
+                        <tr>
+                            <td>{{ text }}</td>
+                            <td>{{ prediction }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}
+  

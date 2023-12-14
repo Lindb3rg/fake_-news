@@ -5,6 +5,8 @@ import spacy
 import string
 import joblib
 
+from links import link_svm, link_tfidf
+
 
 # Download NLTK resources
 nltk.download('punkt')
@@ -18,8 +20,9 @@ nlp = spacy.load('en_core_web_sm')
 
 
 
-loaded_tfidf_vectorizer = joblib.load("SVM/tfidf_vectorizer.joblib")
-loaded_svm_model = joblib.load("SVM/svm_model.joblib")
+loaded_tfidf_vectorizer = joblib.load(link_tfidf)
+loaded_svm_model = joblib.load(link_svm)
+
 
 def svm_preprocess_text(text, use_lemmatization=True):
     # Lowercasing
@@ -60,12 +63,12 @@ def svm_label_text(original_text):
     threshold = 0.5
     binary_predictions = (predictions >= threshold).astype(int)
     
+    list_of_predictions = []
     # Create dict with prediction
-    if binary_predictions == 1:
-        # dict = {"Headline": original_text, "Prediction": "Fake"}
-        # print(dict)
-        # return dict
-        return "Fake"
-    # dict = {"Headline": original_text, "Prediction": "True"}
-    # print(dict)
-    return "True"
+    for i in binary_predictions:
+        if i == 1:
+            list_of_predictions.append("Fake")
+        else:
+            list_of_predictions.append("True")
+
+    return list_of_predictions

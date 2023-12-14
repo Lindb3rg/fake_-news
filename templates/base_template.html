@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}" type="text/css" />
+    <script src="https://kit.fontawesome.com/07b5a4493e.js" crossorigin="anonymous"></script>
+
+    <title>{% block title %}{% endblock %}</title>
+   
+</head>
+<body>
+    <header>
+        <h1>FakeNews Checker</h1>
+        <nav>
+            <a href="#">Länk 1</a>
+            <a href="#">Länk 2</a>
+            <a href="#">Länk 3</a>
+        </nav>
+    </header>
+    
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+    <script src="{{ url_for('static', filename='js/json_main.js') }}"></script>
+</body>
+</html>

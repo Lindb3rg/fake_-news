@@ -21,8 +21,24 @@ fixed_text = "All vegetarian Sanatan Dharmis only need little care about Social 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    return render_template("index.html")
-    
+    return render_template("index.html", table=False)
+
+
+@app.route("/prediction", methods=["POST"])
+def prediction_text():
+    if request.method == "POST":
+        model_selected = request.form["model"]
+        texts = request.form.get("textArea")
+        texts = texts.split("\n")
+        
+        # Get predictions for each text
+        predictions = svm_label_text(texts)
+
+        # Zip each text with its corresponding prediction
+        data = zip(texts, predictions)
+
+        return render_template("index.html", data=data, table=True)
+
 
 @app.route('/api/sequential/predict', methods=['GET', 'POST'])
 def sequential_predict_text():

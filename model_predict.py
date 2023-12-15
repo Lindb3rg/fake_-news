@@ -32,7 +32,6 @@ else:
     SEQUENTIAL_TOKENIZER_LINK = os.environ.get('SEQUENTIAL_TOKENIZER_LINK')
 
 
-
 loaded_tokenizer = Tokenizer()
 
 

@@ -13,13 +13,23 @@ import pickle
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
+is_heroku = 'DYNO' in os.environ
 
-SVM_VECTORIZER_LINK = os.environ.get('SVM_VECTORIZER_LINK')
-SVM_MODEL_LINK = os.environ.get('SVM_MODEL_LINK')
-LOGISTIC_MODEL_LINK = os.environ.get('LOGISTIC_MODEL_LINK')
-SEQUENTIAL_MODEL_LINK = os.environ.get('SEQUENTIAL_MODEL_LINK')
-SEQUENTIAL_TOKENIZER_LINK = os.environ.get('SEQUENTIAL_TOKENIZER_LINK')
+# If running on Heroku, prioritize Heroku Config Vars
+if is_heroku:
+    SVM_VECTORIZER_LINK = os.environ.get('SVM_VECTORIZER_LINK')
+    SVM_MODEL_LINK = os.environ.get('SVM_MODEL_LINK')
+    LOGISTIC_MODEL_LINK = os.environ.get('LOGISTIC_MODEL_LINK')
+    SEQUENTIAL_MODEL_LINK = os.environ.get('SEQUENTIAL_MODEL_LINK')
+    SEQUENTIAL_TOKENIZER_LINK = os.environ.get('SEQUENTIAL_TOKENIZER_LINK')
+else:
+    # Load variables from the local .env file if not on Heroku
+    load_dotenv()
+    SVM_VECTORIZER_LINK = os.environ.get('SVM_VECTORIZER_LINK')
+    SVM_MODEL_LINK = os.environ.get('SVM_MODEL_LINK')
+    LOGISTIC_MODEL_LINK = os.environ.get('LOGISTIC_MODEL_LINK')
+    SEQUENTIAL_MODEL_LINK = os.environ.get('SEQUENTIAL_MODEL_LINK')
+    SEQUENTIAL_TOKENIZER_LINK = os.environ.get('SEQUENTIAL_TOKENIZER_LINK')
 
 loaded_tokenizer = Tokenizer()
 

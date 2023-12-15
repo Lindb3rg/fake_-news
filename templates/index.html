@@ -72,18 +72,18 @@
         
 
     </div>
-    <label class="section_label"><i class="fa-solid fa-square-check"></i>   Select a file</label>
+    <label class="section_label"><i class="fa-solid fa-square-check"></i> Select a file</label>
     <hr>
     <div class="file-input-container">
-
-        <input type="file" id="fileInput" name="fileInput" onchange="displayFileName()">
-        <button class="custom-upload-button"><i class="fa-solid fa-upload"></i> Upload CSV File</button>
+        <label for="fileInput" class="file_upload_label">
+            <i class="fa-solid fa-upload"></i> Upload CSV File
+        </label>
+        <input type="file" id="fileInput" name="fileInput" onchange="displayFileName()" aria-labelledby="fileInputLabel">
     </div>
-    <div class="file-name" id="fileNameDisplay"></div>
-    <label class="section_label"><i class="fa-solid fa-square-check"></i>   Press button to predict</label>
+    <div class="file-name" id="fileNameDisplay" aria-live="polite"></div>
+    <label class="section_label"><i class="fa-solid fa-square-check"></i> Press button to predict</label>
     <hr>
     <input type="submit" value="Click To Predict!">
-
 </form>
 
 {% if table %}

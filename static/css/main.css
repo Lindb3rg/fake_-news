@@ -37,6 +37,10 @@ h1 {
     color:steelblue;
 }
 
+a {
+    text-decoration: none;
+}
+
 nav {
     display: flex;
     align-items: center; /* Center items vertically in the flex container */
@@ -47,6 +51,11 @@ nav a {
     text-decoration: none;
     font-size: 18px; /* Increased font size for navigation links */
     margin-right: 30px; /* Add space between the links */
+}
+
+nav a:hover {
+    color: #5a96c6;
+    cursor: pointer;
 }
 
 main {
@@ -97,6 +106,10 @@ input[type="submit"] {
     padding: 20px 100px; /* Increased padding for submit button */
     border: none;
     cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #6abf6a; /* Change the color for hover state */
 }
 
 output {
@@ -159,6 +172,7 @@ textarea::placeholder {
 
 .checkbox-wrapper-62 :hover {
     cursor: pointer;
+    color: #333;
 }
 
 .checkbox-wrapper-62 .label {
@@ -241,17 +255,21 @@ tbody tr:hover {
 
 
   .file_upload_label {
-    display: inline-block;
+    width: auto;
+    display: inline;
     font-size: 16px;
     margin-bottom: 8px;
-  }
+}
 
-  /* Style for the file input container */
-  .file-input-container {
+.file_upload_label:hover {
+    cursor: pointer;
+    color: #333; /* Change the color for hover state */
+}
+
+/* Style for the file input container */
+.file-input-container {
     position: relative;
-    
-    
-  }
+}
 
   /* Style for the actual file input */
   input[type="file"] {
@@ -265,16 +283,7 @@ tbody tr:hover {
     opacity: 0;
   }
 
-  /* Style for the custom upload button */
-  .custom-upload-button {
-    background-color: #3498db;
-    color: #fff;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    display: inline-block;
-  }
+  
 
   .file-name {
     margin-top: 8px;

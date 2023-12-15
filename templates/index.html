@@ -3,13 +3,17 @@
     
 
 {% block content %}
-<form id="myForm" method="POST" action="/prediction">
+
+<form id="myForm" method="POST" action="/prediction" enctype="multipart/form-data">
     <label for="textArea"><h3>Write or paste your text here:</h3></label>
     <textarea id="textArea" placeholder="Enter Text..." name="textArea" required></textarea>
-
+    <label class="section_label"><i class="fa-solid fa-square-check"></i>   Select Model to predict</label>
+    <hr>
     <div class="checkboxes-container">
+
+        
         <div class="checkbox-wrapper-62">
-            <input type="radio" class="check" name="model" id="check1-62"/>
+            <input type="radio" class="check" name="model" value="sequential" id="check1-62"/>
             <label for="check1-62" class="label">
                 <svg width="43" height="43" viewbox="0 0 90 90">
                     <rect x="30" y="20" width="50" height="50" stroke="black" fill="none" />
@@ -23,7 +27,7 @@
         </div>
 
         <div class="checkbox-wrapper-62">
-            <input type="radio" class="check" name="model" id="check2-62"/>
+            <input type="radio" class="check" name="model" value="logistic" id="check2-62"/>
             <label for="check2-62" class="label">
                 <svg width="43" height="43" viewbox="0 0 90 90">
                     <rect x="30" y="20" width="50" height="50" stroke="black" fill="none" />
@@ -37,7 +41,7 @@
         </div>
 
         <div class="checkbox-wrapper-62">
-            <input type="radio" class="check" name="model" id="check3-62"/>
+            <input type="radio" class="check" name="model" value="svm" id="check3-62"/>
             <label for="check3-62" class="label">
                 <svg width="43" height="43" viewbox="0 0 90 90">
                     <rect x="30" y="20" width="50" height="50" stroke="black" fill="none" />
@@ -51,7 +55,7 @@
         </div>
 
         <div class="checkbox-wrapper-62">
-            <input type="radio" class="check" name="model" id="check4-62"/>
+            <input type="radio" class="check" name="model" value="all_models" id="check4-62"/>
             <label for="check4-62" class="label">
                 <svg width="43" height="43" viewbox="0 0 90 90">
                     <rect x="30" y="20" width="50" height="50" stroke="black" fill="none" />
@@ -62,10 +66,22 @@
                 </svg>
                 <span><i class="fa-solid fa-robot"></i> All Models</span>
             </label>
+            
         </div>
 
-    </div>
         
+
+    </div>
+    <label class="section_label"><i class="fa-solid fa-square-check"></i>   Select a file</label>
+    <hr>
+    <div class="file-input-container">
+
+        <input type="file" id="fileInput" name="fileInput" onchange="displayFileName()">
+        <button class="custom-upload-button"><i class="fa-solid fa-upload"></i> Upload CSV File</button>
+    </div>
+    <div class="file-name" id="fileNameDisplay"></div>
+    <label class="section_label"><i class="fa-solid fa-square-check"></i>   Press button to predict</label>
+    <hr>
     <input type="submit" value="Click To Predict!">
 
 </form>
@@ -77,6 +93,7 @@
                     <tr>
                         <th>Text</th>
                         <th>Prediction</th>
+                        <th>Model</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -84,6 +101,7 @@
                         <tr>
                             <td>{{ text }}</td>
                             <td>{{ prediction }}</td>
+                            <td>{{ model_selected }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

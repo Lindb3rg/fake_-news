@@ -3,6 +3,7 @@ from model_predict import model_predict_text
 import os
 import csv
 
+
 app = Flask(__name__)
 port = int(os.environ.get('PORT', 5000))
 
@@ -70,13 +71,11 @@ def prediction_text():
         if model_selected == "all_models":
             all_models = True
         
-        # Get predictions for each text
+        
         predictions = model_predict_text(texts, model_selected, all_models)
 
-        # Zip each text with its corresponding prediction
-        data = zip(texts, predictions)
 
-        return render_template("index.html", data=data, table=True, model_selected=model_selected)
+        return render_template("index.html", predictions=predictions, table=True, model_selected=model_selected)
     
 
 
@@ -84,18 +83,16 @@ def prediction_text():
 @app.route('/api/sequential/predict', methods=['GET', 'POST'])
 def sequential_predict_text():
     if request.method == 'POST':
-        # Get the text from the POST request
+        
         data = request.get_json()
         input_text = data.get('text', "")
-
-        # Use the fixed text for preprocessing (replace this with your actual preprocessing logic)
+        
+        
         predict_text = model_predict_text(input_text, "sequential")
-
-        # Return the preprocessed text as JSON response for POST requests
-        response_data = {'predict': predict_text}
-        return jsonify(response_data)
+        return jsonify(predict_text)
     else:
-        # Render an HTML page for GET requests
+
+        
         predict_text = model_predict_text(fixed_text, "sequential")
         return jsonify({"Original Text": fixed_text, "Sequential Prediction Result": predict_text})
 
@@ -103,18 +100,17 @@ def sequential_predict_text():
 @app.route('/api/svm/predict', methods=['GET', 'POST'])
 def svm_predict_text():
     if request.method == 'POST':
-        # Get the text from the POST request
+        
         data = request.get_json()
         input_text = data.get('text', "")
 
-        # Use the fixed text for preprocessing (replace this with your actual preprocessing logic)
+        
         predict_text = model_predict_text(input_text, "svm")
 
-        # Return the preprocessed text as JSON response for POST requests
-        response_data = {'predict': predict_text}
-        return jsonify(response_data)
+        predict_text = model_predict_text(input_text, "sequential")
+        return jsonify(predict_text)
     else:
-        # Render an HTML page for GET requests
+        
         predict_text = model_predict_text(fixed_text, "svm")
         return jsonify({"Original Text": fixed_text, "SVM Prediction Result": predict_text})
     

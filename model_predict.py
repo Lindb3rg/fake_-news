@@ -100,7 +100,7 @@ def model_predict_text(original_text, modelname="svm", use_all_models=False):
     loaded_model = ""
 
     if use_all_models:
-        predictions = all_models_predict_text(preprocessed_texts)
+        predictions = all_models_predict_text(preprocessed_texts, original_text)
         return predictions
     
     else:
@@ -127,20 +127,22 @@ def model_predict_text(original_text, modelname="svm", use_all_models=False):
     threshold = 0.5
     binary_predictions = (predictions >= threshold).astype(int)
     
-    list_of_predictions = []
+    dict_of_predictions = {}
     # Create dict with prediction
-    for i in binary_predictions:
+    for index, i in enumerate(binary_predictions):
         if i == 1:
-            list_of_predictions.append("Fake")
+            key = str(original_text[index])
+            dict_of_predictions[key] = "Fake"
         else:
-            list_of_predictions.append("True")
+            key = str(original_text[index])
+            dict_of_predictions[key] = "True"
 
 
-    return list_of_predictions
+    return dict_of_predictions
     
 
 
-def all_models_predict_text(preprocessed_texts):
+def all_models_predict_text(preprocessed_texts, original_text):
 
     processed_text_strings = [' '.join(text) for text in preprocessed_texts]
     tfidf_features = loaded_tfidf_vectorizer.transform(processed_text_strings)
@@ -157,7 +159,7 @@ def all_models_predict_text(preprocessed_texts):
     svm_binary_predictions = (svm_predictions >= threshold).astype(int)
     sequential_binary_predictions = (sequential_predictions >= threshold).astype(int)
 
-    final_predictions = []
+    final_predictions = {}
 
     votes_for_fake = 0
 
@@ -172,11 +174,14 @@ def all_models_predict_text(preprocessed_texts):
             votes_for_fake +=1
 
         if votes_for_fake > 1:
-            final_predictions.append("Fake")
+            key = str(original_text[index])
+            final_predictions[key] = "Fake"
         else:
-            final_predictions.append("Real")
+            key = str(original_text[index])
+            final_predictions[key] = "Real"
         
         votes_for_fake = 0
+    
 
     return final_predictions
 

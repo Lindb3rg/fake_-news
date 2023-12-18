@@ -126,7 +126,7 @@ def model_predict_text(original_text, modelname="svm", use_all_models=False):
     threshold = 0.5
     binary_predictions = (predictions >= threshold).astype(int)
     
-    list_of_predictions = []
+    dict_of_predictions = {}
     # Create dict with prediction
     for index, i in enumerate(binary_predictions):
         if i == 1:

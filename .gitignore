@@ -9,3 +9,4 @@ Sequencial/__pycache__
 SVM/__pycache__
 link.py
 .env
+API/post_to_api.py

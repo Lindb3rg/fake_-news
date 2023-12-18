@@ -97,7 +97,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for text, prediction in data %}
+                    {% for text, prediction in predictions.items() %}
                         <tr>
                             <td>{{ text }}</td>
                             <td>{{ prediction }}</td>

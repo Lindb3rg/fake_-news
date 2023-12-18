@@ -1,5 +1,4 @@
 import requests as rq
-from typing import Union
 
 """
 This function is used to POST a text to one or all of our models. 
@@ -7,8 +6,8 @@ This function is used to POST a text to one or all of our models.
 """
 
 
-def post_to_our_API(text:str, model:Union["svm":str,"sequential":str,"logistic":str,"all_models":str])->dict:
 
+def post_to_our_API(text:str, model:str)->dict:
 
     current_models = ["svm",
                       "sequential",

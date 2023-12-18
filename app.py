@@ -40,6 +40,48 @@ def index():
     return render_template("index.html", table=False)
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @app.route("/prediction", methods=["POST"])
 def prediction_text():
     if request.method == "POST":

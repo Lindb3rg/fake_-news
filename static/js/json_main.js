@@ -1,4 +1,5 @@
 function displayFileName() {
+  console.log("File input changed");  // Add this line
   var input = document.getElementById('fileInput');
   var display = document.getElementById('fileNameDisplay');
 
@@ -8,3 +9,6 @@ function displayFileName() {
       display.textContent = "No file selected";
   }
 }
+
+
+

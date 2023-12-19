@@ -21,7 +21,6 @@ fixed_text = "All vegetarian Sanatan Dharmis only need little care about Social 
 
 def is_valid_csv(file_content):
     try:
-        # Attempt to parse the content as CSV
         import csv
         csv.reader(file_content.decode('utf-8'))
         return True
@@ -30,11 +29,9 @@ def is_valid_csv(file_content):
     
 def get_first_column_data(file_content):
     try:
-        # Decode the file content and create a CSV reader
         decoded_content = file_content.decode('utf-8')
         csv_reader = csv.reader(decoded_content.splitlines())
 
-        # Extract the data from the first column
         first_column_data = [row[0] for row in csv_reader]
 
         return first_column_data
@@ -45,6 +42,7 @@ def get_first_column_data(file_content):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     return render_template("index.html", table=False)
+
 
 
 @app.route('/text', methods=['POST'])
@@ -100,7 +98,6 @@ def prediction_text():
         if uploaded_file:
             file_content = uploaded_file.read()
             
-            # Check if the file is a CSV file
             if not is_valid_csv(file_content):
                 error = "Uploaded file is not a valid CSV file."
                 return render_template("error_page.html", error=error)
@@ -112,13 +109,10 @@ def prediction_text():
                 error = "First column data in csv file must contain rows of text"
                 return render_template("error_page.html", error=error)
 
-        all_models = False
-
-        if model_selected == "all_models":
-            all_models = True
+      
         
         
-        predictions = model_predict_text(texts, model_selected, all_models)
+        predictions = model_predict_text(texts, model_selected)
 
 
         return render_template("index.html", predictions=predictions, table=True, model_selected=model_selected)
@@ -149,17 +143,42 @@ def svm_predict_text():
         
         data = request.get_json()
         input_text = data.get('text', "")
-
-        
         predict_text = model_predict_text(input_text, "svm")
-
-        predict_text = model_predict_text(input_text, "sequential")
         return jsonify(predict_text)
+    
     else:
         
         predict_text = model_predict_text(fixed_text, "svm")
-        return jsonify({"Original Text": fixed_text, "SVM Prediction Result": predict_text})
-    
+        return jsonify({"Original Text": fixed_text, "SVM Results": predict_text})
+
+
+@app.route('/api/logistic/predict', methods=['GET', 'POST'])
+def logistic_predict_text():
+    if request.method == 'POST':
+
+        data = request.get_json()
+        input_text = data.get('text', "")        
+        predict_text = model_predict_text(input_text, "logistic")
+
+        return jsonify(predict_text)
+    else:
+        
+        predict_text = model_predict_text(fixed_text, "logistic")
+        return jsonify({"Original Text": fixed_text, "Logistic Model": predict_text})
+
+
+@app.route('/api/all_models/predict', methods=['GET', 'POST'])
+def all_models_predict_text():
+    if request.method == 'POST':
+        
+        data = request.get_json()
+        input_text = data.get('text', "")        
+        predict_text = model_predict_text(input_text, "all_models")
+
+        return jsonify(predict_text)
+    else:
+        predict_text = model_predict_text(fixed_text, "all_models")
+        return jsonify({"Original Text": fixed_text, "Best result från all Models": predict_text})
     
 
 if __name__ == "__main__":

@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, RadioField, SubmitField
+from wtforms import StringField, RadioField, SubmitField, validators
 from flask_wtf.file import FileField, FileRequired, FileAllowed
 from wtforms.validators import DataRequired, ValidationError, Length, EqualTo, NumberRange, InputRequired
 
@@ -7,12 +7,12 @@ from wtforms.validators import DataRequired, ValidationError, Length, EqualTo, N
 
 class textForm(FlaskForm):
     text = StringField("Text here", validators=[DataRequired(), Length(min=4, max=200)])
-    model = RadioField('Model', choices=[
+    model = RadioField('model', choices=[
         ('sequential', 'Sequential Model'),
         ('logistic', 'Logistic Model'),
         ('svm', 'SVM Model'),
         ('all', 'All Models'),
-    ])
+    ], validators=[validators.Optional()], default='svm')
     submit = SubmitField("Click To Predict")
 
 
@@ -32,6 +32,6 @@ class FileForm(FlaskForm):
         ('logistic', 'Logistic Model'),
         ('svm', 'SVM Model'),
         ('all', 'All Models'),
-    ], validators=[InputRequired()])
+    ], validators=[validators.Optional()], default='svm')
 
     submit = SubmitField("Click To Predict")

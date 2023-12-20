@@ -10,19 +10,20 @@ body::before {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    opacity: 0.9;
+    opacity: 0.2;
     z-index: -1;
 }
 
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: Helvetica, sans-serif, sans-serif;
 }
 
 header {
-    background-color: black;
-    color: white;
+    background-color: rgb(37, 69, 95);
+    opacity: 80%;
+    color: rgb(255, 255, 255);
     padding: 20px; /* Increased padding for header */
     display: flex;
     justify-content: space-between; /* Align items to the edges */
@@ -32,6 +33,17 @@ header {
     z-index: 1000;
 }
 h1 {
+    margin: 0; /* Remove default margin for h1 */
+    
+    color:rgb(255, 255, 255);
+}
+
+h2 {
+    margin: 0; /* Remove default margin for h1 */
+    
+    color:steelblue;
+}
+h3 {
     margin: 0; /* Remove default margin for h1 */
     text-align: left; /* Align h1 to the left */
     color:steelblue;
@@ -47,7 +59,7 @@ nav {
 }
 
 nav a {
-    color:steelblue;
+    color:#4682b4;
     text-decoration: none;
     font-size: 18px; /* Increased font size for navigation links */
     margin-right: 30px; /* Add space between the links */
@@ -65,6 +77,104 @@ main {
 }
 
 
+.custom-div {
+    width: 80%;
+    background-color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 80px;
+    padding-left: auto;
+    padding-right: auto;
+    padding-bottom: 80px;
+    transition: all 0.1s ease; /* Smooth transition when the div expands */
+    border-radius: 40px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin: auto; /* Center the div horizontally */
+    
+
+  }
+
+
+  
+  
+  
+  /* Initially hide the form */
+  #textForm {
+    display: none;
+    width: 100%; /* Form takes the full width */
+    margin-top: 20px; /* Spacing between buttons and form */
+  }
+  
+  /* Other styles remain the same */
+  
+  #fileForm {
+    display: none;
+    width: 100%; /* Form takes the full width */
+    margin-top: 20px; /* Spacing between buttons and form */
+  }
+  
+
+
+
+
+  
+  .titles {
+    text-align: center;
+  }
+
+  #textForm {
+    display: none;
+  }
+  
+  h1, h2 {
+    margin: 0;
+  }
+  
+  h2 {
+    border-bottom: 1px solid steelblue; /* Adding a bottom border to h1 */
+    padding-bottom: 5px; /* Adjust spacing as needed */
+  }
+  
+  .buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px; /* Adjust margin as needed */
+  }
+  
+  .submit-button,
+  .upload-button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Style for Submit Text button */
+  .submit-button {
+    background-color: steelblue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  .submit-button:hover {
+    background-color: #25455f; /* Change the color for hover state */
+}
+
+
+  /* Style for Upload File button */
+  .upload-button {
+    background-color: steelblue;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  .upload-button:hover {
+    background-color: #25455f; /* Change the color for hover state */
+}
+  
 
 form {
     margin-top: 30px; /* Increased margin for form */
@@ -74,7 +184,14 @@ form {
 label {
     display: block;
     margin-bottom: 10px; /* Increased margin for labels */
-    color: black;
+    color: #25455f;
+    font-size: 18px; /* Increased font size for labels */
+}
+
+.label_radio {
+    display: block;
+    margin-bottom: 10px; /* Increased margin for labels */
+    color: #25455f;
     font-size: 18px; /* Increased font size for labels */
 }
 
@@ -82,9 +199,10 @@ textarea {
     width: 60%; /* Decreased width of textarea */
     height: 100px;
     resize: vertical;
-    opacity: 0.7;
-    padding-left: 20px;
-    padding-top: 10px;
+    opacity: 0.4;
+    padding: 40px;
+    border-radius: 40px;
+    border-color: steelblue;
 }
 
 .checkbox-group {
@@ -100,15 +218,16 @@ input[type="checkbox"] {
 }
 
 input[type="submit"] {
-    background-color: #4CAF50;
+    background-color: steelblue;
     color: white;
     padding: 20px 100px; /* Increased padding for submit button */
     border: none;
+    border-radius: 5px;
     cursor: pointer;
 }
 
 input[type="submit"]:hover {
-    background-color: #6abf6a; /* Change the color for hover state */
+    background-color: rgb(37, 69, 95); /* Change the color for hover state */
 }
 
 output {
@@ -120,8 +239,7 @@ output {
 }
 
 textarea::placeholder {
-    font-weight: bold; /* Set placeholder text to bold */
-    color: black;
+    color: #25455f;
     padding-left: 20px;
     font-size: larger;
     padding-top: 10px;
@@ -249,7 +367,7 @@ tbody tr:hover {
 
 .error_div {
     margin-top: 100px;
-    color: red;
+    color: #e85959;
   }
 
 
@@ -305,6 +423,11 @@ tbody tr:hover {
 
  .flashes {
     font-size: xx-large;
+
+    color: #e85959;
+ }
+
+
     color: red;
  }
 
@@ -347,3 +470,4 @@ tbody tr:hover {
     font-size: 12px;
     margin-top: 5px;
 }
+

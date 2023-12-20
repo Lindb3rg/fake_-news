@@ -4,7 +4,6 @@
 
 {% block content %}
 
-<h1>Upload CSV File</h1>
     
     {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -50,6 +49,7 @@
         <hr>
     
         <div class="file-input-container">
+            <span style="color: black;"><i class="fa-solid fa-upload"></i> </span>
             {{ form.css_file.label(class="file_upload_label", for="fileInput") }}
             {{ form.css_file(id="fileInput", onchange="displayFileName()", aria_labelledby="fileInputLabel") }}
         </div>

@@ -68,7 +68,6 @@ main {
 
 form {
     margin-top: 30px; /* Increased margin for form */
-    
 
 }
 
@@ -286,14 +285,16 @@ tbody tr:hover {
   
 
   .file-name {
-    margin-top: 8px;
+    margin-top: 10px;
     font-size: 14px;
     color: #333;
+    margin-bottom: 10px;
   }
 
   hr {
     max-width: 400px;
     height: 2px;
+    margin-bottom: 10px;
   }
 
   .section_label {
@@ -306,3 +307,43 @@ tbody tr:hover {
     font-size: xx-large;
     color: red;
  }
+
+ span {
+    margin-bottom: 10px;
+ }
+
+ .your-submit-button-class {
+    margin-top: 40px;
+    border-radius: 4px;
+ }
+
+ .text-div {
+    margin: 20px auto; /* Add some margin for spacing and center the text-div */
+    max-width: 400px; /* Set a maximum width for the text-div */
+}
+
+.text-div label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.text-div input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.text-div input:focus {
+    outline: none;
+    border-color: steelblue;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.7);
+}
+
+.text-div .error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+}

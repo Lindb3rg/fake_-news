@@ -47,15 +47,15 @@ def index():
     return render_template("index.html", table=False)
 
 
-@app.route('/text', methods=['POST'])
+@app.route('/text', methods=['POST', "GET"])
 def text():
-    text_form = textForm()
+    form = textForm()
     if request.method == "POST":
-        texts = text_form.text.data
-        model_selected = text_form.model.data
+        texts = form.text.data
+        model_selected = form.model.data
         predictions = model_predict_text(texts, model_selected)
-        return render_template("index.html", predictions=predictions, table=True, model_selected=model_selected)
-    return render_template("text.html", table=False, text_form=text_form)
+        return render_template("text.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
+    return render_template("text.html", table=False, form=form)
 
 
 

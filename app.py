@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, flash,redirect
+from flask import Flask, jsonify, render_template, request, flash
 from flask_wtf.csrf import CSRFProtect
 from model_predict import model_predict_text
 from form import textForm, FileForm
@@ -63,6 +63,8 @@ def text():
 
 
 
+
+
 @app.route('/file', methods=['POST', 'GET'])
 def file():
     form = FileForm()
@@ -85,7 +87,6 @@ def file():
         else:
             flash('Error: The first column of the CSV file must contain text.', 'error')
 
-    # Include a flash message for the case where the model is not selected
     else:
         form_errors = form.errors
         return render_template("file.html", table=False, form=form, form_errors=form_errors)

@@ -55,8 +55,9 @@ def text():
         texts = form.text.data
         model_selected = form.model.data
         predictions = model_predict_text(texts, model_selected)
+        flash('Text submitted and processed successfully!', 'Success!')
         
-        return render_template("text.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
+        return render_template("prediction_result.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
     
     return render_template("text.html", table=False, form=form)
 
@@ -78,7 +79,7 @@ def file():
             if first_column_data is not None:
                 predictions = model_predict_text(first_column_data, model_selected)
 
-                return render_template("file.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
+                return render_template("prediction_result.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
             else:
                 flash('First column data in CSV file must contain rows of text', 'error')
         else:

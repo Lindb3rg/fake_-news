@@ -1,0 +1,48 @@
+{% extends "base_template.html" %}
+{% block title %}FakeNews Checker{% endblock %}
+
+    
+
+{% block content %}
+
+{% if table %}
+
+{{ form.csrf_token }}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        
+            {% for message in messages %}
+            <div class="titles">
+                <h2>{{ 'error' if 'Error' in message else 'Success!' }}</h2>
+                <h3 class="h3_centered">{{ message }}</h3>
+            </div>
+            
+            {% endfor %}
+        
+    {% endif %}
+    {% endwith %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Text</th>
+                        <th>Prediction</th>
+                        <th>Model</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for text, prediction in predictions.items() %}
+                        <tr>
+                            <td>{{ text }}</td>
+                            <td>{{ prediction }}</td>
+                            <td>{{ model_selected }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+
+    {% endif %}
+{% endblock %}

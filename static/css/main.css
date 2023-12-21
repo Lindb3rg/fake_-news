@@ -49,6 +49,12 @@ h3 {
     color:steelblue;
 }
 
+.h3_centered{
+    margin: 0; /* Remove default margin for h1 */
+    text-align: center; /* Align h1 to the left */
+    color:steelblue;
+}
+
 a {
     text-decoration: none;
 }
@@ -131,9 +137,12 @@ main {
     margin: 0;
   }
   
-  h2 {
+  
+
+  .h2_bottomLine {
+    margin: 0;
     border-bottom: 1px solid steelblue; /* Adding a bottom border to h1 */
-    padding-bottom: 5px; /* Adjust spacing as needed */
+    padding-bottom: 5px;
   }
   
   .buttons {

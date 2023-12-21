@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, flash
+from flask import Flask, jsonify, render_template, request, flash,redirect
 from flask_wtf.csrf import CSRFProtect
 from model_predict import model_predict_text
 from form import textForm, FileForm
@@ -39,23 +39,25 @@ def get_first_column_data(file_content):
         return None
 
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    
     return render_template("index.html", table=False)
 
 
 
+
 @app.route('/text', methods=['POST', "GET"])
-
-
-
 def text():
     form = textForm()
     if request.method == "POST":
         texts = form.text.data
         model_selected = form.model.data
         predictions = model_predict_text(texts, model_selected)
+        
         return render_template("text.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
+    
     return render_template("text.html", table=False, form=form)
 
 
@@ -75,6 +77,7 @@ def file():
             
             if first_column_data is not None:
                 predictions = model_predict_text(first_column_data, model_selected)
+
                 return render_template("file.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
             else:
                 flash('First column data in CSV file must contain rows of text', 'error')

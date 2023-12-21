@@ -463,7 +463,7 @@ tbody tr:hover {
 }
 
 .text-div .error {
-    color: red;
+    color: #e85959;
     font-size: 12px;
     margin-top: 5px;
 }

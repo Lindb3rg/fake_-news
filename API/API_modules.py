@@ -1,4 +1,5 @@
 import requests as rq
+from flask_wtf import csrf
 
 """
 This function is used to POST a text to one or all of our models. 

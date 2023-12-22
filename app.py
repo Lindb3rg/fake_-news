@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, render_template, request, flash,session
 from flask_wtf.csrf import CSRFProtect
+from flask_wtf import csrf
 from model_predict import model_predict_text
 from form import textForm, FileForm
 import secrets
@@ -12,6 +13,8 @@ secret_key = secrets.token_hex(32)
 app.config['SECRET_KEY'] = secret_key
 csrf = CSRFProtect(app)
 port = int(os.environ.get('PORT', 5000))
+
+
 
 
 # Invoke-RestMethod -Uri 'http://127.0.0.1:5000/api/sequential/predict' -Method Post -Headers @{"Content-Type"="application/json"} -Body '{"text": "All vegetarian Sanatan Dharmis only need little care about Social Distancing and enjoy long healthy life."}'
@@ -43,10 +46,17 @@ def get_first_column_data(file_content):
 def get_csrf_token():
     
     csrf_token = session.get('csrf_token')
-    if csrf_token is None:
-        csrf_token = 'generate_your_csrf_token_here'  # You should use a proper CSRF token generation method
     
-    session['csrf_token'] = csrf_token
+    if csrf_token is None:
+        csrf_token = csrf._get_csrf_token()
+        if csrf_token == None:
+            csrf_token = csrf.generate_csrf()
+            return csrf_token 
+        
+        return csrf_token
+        
+    
+    # session['csrf_token'] = csrf_token
     
     return csrf_token
 

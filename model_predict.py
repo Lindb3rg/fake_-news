@@ -116,6 +116,8 @@ def model_predict_text(original_text:list, modelname="svm")->dict:
     threshold = 0.5
     binary_predictions = (predictions >= threshold).astype(int)
     
+    
+
     dict_of_predictions = {}
     
     for index, i in enumerate(binary_predictions):
@@ -127,9 +129,19 @@ def model_predict_text(original_text:list, modelname="svm")->dict:
             dict_of_predictions[key] = "True"
 
 
+
+    # prediction_data = {
+    #     predictions:predictions
+    #     text: dict_of_predictions[0]
+    #     classification: dict_of_predictions[1]
+    # }
+
+    # display_content(prediciton_data["predictions"])
+
+
     return dict_of_predictions
     
-
+    
 
 
 

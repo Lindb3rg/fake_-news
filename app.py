@@ -39,24 +39,29 @@ def get_first_column_data(file_content):
         return None
 
 
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    
     return render_template("index.html", table=False)
 
 
 
+
 @app.route('/text', methods=['POST', "GET"])
-
-
-
 def text():
     form = textForm()
     if request.method == "POST":
         texts = form.text.data
         model_selected = form.model.data
         predictions = model_predict_text(texts, model_selected)
-        return render_template("text.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
+        flash('Text submitted and processed successfully!', 'Success!')
+        
+        return render_template("prediction_result.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
+    
     return render_template("text.html", table=False, form=form)
+
+
 
 
 
@@ -75,13 +80,13 @@ def file():
             
             if first_column_data is not None:
                 predictions = model_predict_text(first_column_data, model_selected)
-                return render_template("file.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
+
+                return render_template("prediction_result.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
             else:
                 flash('First column data in CSV file must contain rows of text', 'error')
         else:
             flash('Error: The first column of the CSV file must contain text.', 'error')
 
-    # Include a flash message for the case where the model is not selected
     else:
         form_errors = form.errors
         return render_template("file.html", table=False, form=form, form_errors=form_errors)

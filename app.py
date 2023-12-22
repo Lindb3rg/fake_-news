@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, render_template, request, flash
+from flask import Flask, jsonify, render_template, request, flash,session
 from flask_wtf.csrf import CSRFProtect
 from model_predict import model_predict_text
 from form import textForm, FileForm
@@ -37,6 +37,18 @@ def get_first_column_data(file_content):
         return first_column_data
     except csv.Error:
         return None
+
+
+@app.route('/get_csrf_token', methods=['GET'])
+def get_csrf_token():
+    
+    csrf_token = session.get('csrf_token')
+    if csrf_token is None:
+        csrf_token = 'generate_your_csrf_token_here'  # You should use a proper CSRF token generation method
+    
+    session['csrf_token'] = csrf_token
+    
+    return csrf_token
 
 
 
@@ -130,6 +142,7 @@ def prediction_text():
 
 @app.route('/api/sequential/predict', methods=['GET', 'POST'])
 def sequential_predict_text():
+
     if request.method == 'POST':
         
         data = request.get_json()

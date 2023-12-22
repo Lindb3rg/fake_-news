@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, request, flash,session
 from flask_wtf.csrf import CSRFProtect
-from flask_wtf import csrf
+from flask_wtf import csrf as cd
 from model_predict import model_predict_text
 from form import textForm, FileForm
 import secrets
@@ -11,7 +11,7 @@ import csv
 app = Flask(__name__)
 secret_key = secrets.token_hex(32)
 app.config['SECRET_KEY'] = secret_key
-csrf = CSRFProtect(app)
+# csrf = CSRFProtect(app)
 port = int(os.environ.get('PORT', 5000))
 
 
@@ -42,23 +42,23 @@ def get_first_column_data(file_content):
         return None
 
 
-@app.route('/get_csrf_token', methods=['GET'])
-def get_csrf_token():
+# @app.route('/get_csrf_token', methods=['GET'])
+# def get_csrf_token():
     
-    csrf_token = session.get('csrf_token')
+#     csrf_token = session.get('csrf_token')
     
-    if csrf_token is None:
-        csrf_token = csrf._get_csrf_token()
-        if csrf_token == None:
-            csrf_token = csrf.generate_csrf()
-            return csrf_token 
+#     if csrf_token is None:
+#         csrf_token = csrf._get_csrf_token()
+#         if csrf_token == None:
+#             csrf_token = cd.generate_csrf()
+#             return csrf_token 
         
-        return csrf_token
+#         return csrf_token
         
     
-    # session['csrf_token'] = csrf_token
+#     # session['csrf_token'] = csrf_token
     
-    return csrf_token
+#     return csrf_token
 
 
 

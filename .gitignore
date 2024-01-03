@@ -1,6 +1,6 @@
 /env
 /env3.10
-/requirements_4
+requirements_4.txt
 **/__pycache__/
 Sequencial/__pycache__/__init__.cpython-311.pyc
 links.py
@@ -10,3 +10,4 @@ SVM/__pycache__
 link.py
 .env
 API/post_to_api.py
+requirements.txt

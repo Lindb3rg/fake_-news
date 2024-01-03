@@ -11,7 +11,7 @@ class textForm(FlaskForm):
         ('sequential', 'Sequential Model'),
         ('logistic', 'Logistic Model'),
         ('svm', 'SVM Model'),
-        ('all', 'All Models'),
+        ('all_models', 'All Models'),
     ], validators=[validators.Optional()], default='svm')
     submit = SubmitField("Click To Predict")
 
@@ -31,7 +31,7 @@ class FileForm(FlaskForm):
         ('sequential', 'Sequential Model'),
         ('logistic', 'Logistic Model'),
         ('svm', 'SVM Model'),
-        ('all', 'All Models'),
+        ('all_models', 'All Models'),
     ], validators=[validators.Optional()], default='svm')
 
     submit = SubmitField("Click To Predict")

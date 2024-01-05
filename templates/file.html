@@ -59,6 +59,7 @@
                     <tr>
                         <th>Text</th>
                         <th>Prediction</th>
+                        <th>Accuracy</th>
                         <th>Model</th>
                     </tr>
                 </thead>
@@ -67,6 +68,7 @@
                         <tr>
                             <td>{{ text }}</td>
                             <td>{{ prediction }}</td>
+                            <td>{{ row_predictions[loop.index0] }}</td>
                             <td>{{ model_selected }}</td>
                         </tr>
                     {% endfor %}

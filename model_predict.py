@@ -6,6 +6,7 @@ import string
 import joblib
 import pickle
 import os
+import numpy as np
 
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
@@ -88,10 +89,11 @@ def model_predict_text(original_text:list, modelname="svm")->dict:
 
     predictions = ""
     loaded_model = ""
+    row_predictions = []
 
-    if modelname == "all_models":
-        predictions = all_models_predict_text(preprocessed_texts, original_text)
-        return predictions
+    if modelname == "all":
+        predictions, row_predictions = all_models_predict_text(preprocessed_texts, original_text)
+        return predictions, row_predictions
     
     elif modelname == "svm":
         loaded_model = loaded_svm_model
@@ -102,15 +104,20 @@ def model_predict_text(original_text:list, modelname="svm")->dict:
     elif modelname == "sequential":
         loaded_model = loaded_sequential_model
 
+    else:
+        raise ValueError("Invalid modelname provided.")
+
 
     if modelname == "svm" or modelname == "logistic":
         processed_text_strings = [' '.join(text) for text in preprocessed_texts]
         tfidf_features = loaded_tfidf_vectorizer.transform(processed_text_strings)
+        row_predictions = pred_proba_rows(loaded_model, tfidf_features, modelname)
         predictions = loaded_model.predict(tfidf_features)
 
     elif modelname == "sequential":
         new_sequences = loaded_tokenizer.texts_to_sequences(preprocessed_texts)
         new_padded_sequence = pad_sequences(new_sequences, maxlen=maxlen)
+        row_predictions = pred_proba_rows(loaded_model, new_padded_sequence, modelname)
         predictions = loaded_model.predict(new_padded_sequence)
 
     threshold = 0.5
@@ -124,10 +131,13 @@ def model_predict_text(original_text:list, modelname="svm")->dict:
         if i == 1:
             key = str(original_text[index])
             dict_of_predictions[key] = "Fake"
+
         else:
             key = str(original_text[index])
             dict_of_predictions[key] = "True"
 
+            
+    return dict_of_predictions, row_predictions
 
 
     # prediction_data = {
@@ -138,12 +148,8 @@ def model_predict_text(original_text:list, modelname="svm")->dict:
 
     # display_content(prediciton_data["predictions"])
 
-
-    return dict_of_predictions
     
     
-
-
 
 
 def all_models_predict_text(preprocessed_texts:list[str], original_text:list)->dict:
@@ -155,7 +161,9 @@ def all_models_predict_text(preprocessed_texts:list[str], original_text:list)->d
     new_padded_sequence = pad_sequences(new_sequences, maxlen=maxlen)
 
     logistic_predictions = loaded_logistic_model.predict(tfidf_features)
+    logistic_row_predictions = loaded_logistic_model.predict_proba(tfidf_features)
     svm_predictions = loaded_svm_model.predict(tfidf_features)
+    svm_row_predictions = loaded_svm_model.predict_proba(tfidf_features)
     sequential_predictions = loaded_sequential_model.predict(new_padded_sequence)
 
     threshold = 0.5
@@ -164,30 +172,91 @@ def all_models_predict_text(preprocessed_texts:list[str], original_text:list)->d
     sequential_binary_predictions = (sequential_predictions >= threshold).astype(int)
 
     final_predictions = {}
-
-    votes_for_fake = 0
-
+    row_pred = []
+    
+    
     for index in range(len(logistic_binary_predictions)):
+        votes_for_fake = 0
+        predictions = 0
         if logistic_binary_predictions[index] == 1:
             votes_for_fake +=1
+            predictions += logistic_row_predictions[index,1] * 100
 
         if svm_binary_predictions[index] == 1:
             votes_for_fake +=1
+            predictions += svm_row_predictions[index,1]*100
 
         if sequential_binary_predictions[index] == 1:
             votes_for_fake +=1
+            predictions += sequential_predictions[index,0]*100
 
         if votes_for_fake > 1:
             key = str(original_text[index])
             final_predictions[key] = "Fake"
+            predictions /= votes_for_fake
+            predictions = f"{predictions:.2f}%"
+            row_pred.append(predictions)
+
         else:
+            predictions = 0
+            votes_for_true = 0
+            if logistic_binary_predictions[index] == 0:
+                predictions += logistic_row_predictions[index,0] * 100
+                votes_for_true += 1
+            if svm_binary_predictions[index] == 0:
+                predictions += svm_row_predictions[index,0]*100
+                votes_for_true += 1
+            if sequential_binary_predictions[index] == 0:
+                predictions += (100 - (sequential_predictions[index,0]*100))
+                votes_for_true += 1
+
             key = str(original_text[index])
             final_predictions[key] = "True"
-        
-        votes_for_fake = 0
+            predictions /= votes_for_true
+            predictions = f"{predictions:.2f}%"
+            row_pred.append(predictions)
     
+    
+    return final_predictions, row_pred
 
-    return final_predictions
+
+
+
+def pred_proba_rows(model, text_processor, modelname):
+    if modelname == "sequential":
+        row_pred_seq = []
+        y_pred = model.predict(text_processor)
+        y_pred_binary = (y_pred > 0.5).astype(int)
+
+        probabilities = y_pred
+
+        for i, probability in enumerate(probabilities[:, 0]):
+            probability *= 100
+    
+            pred = y_pred_binary[i]
+            if pred == 0:
+                probability = 100 - probability
+        
+            probabilities = f"{probability:.2f}%"
+            row_pred_seq.append(probabilities)
+        
+        return row_pred_seq
+
+    probabilities = model.predict_proba(text_processor)
+
+    row_pred = []
+
+    for i, (probability_0, probability_1) in enumerate(zip(probabilities[:, 0], probabilities[:, 1])):
+        if probability_1 >= 0.5:
+            prob = f"{probability_1 * 100:.2f}%"
+            row_pred.append(prob)
+        else:
+            prob = f"{probability_0 * 100:.2f}%"
+            row_pred.append(prob)
+
+
+
+    return row_pred
 
 
 

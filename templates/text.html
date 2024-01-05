@@ -1,10 +1,10 @@
-{% extends "base_template.html" %}
-{% block title %}Text{% endblock %}
+
+
     
 
 {% block content %}
 
-<form method="post" action="/text">
+<form method="post" autocomplete="off" action="/text">
     
     {{ form.csrf_token }}
     <label class="section_label"><i class="fa-solid fa-square-check"></i> Select Model</label>

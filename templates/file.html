@@ -1,19 +1,8 @@
-{% extends "base_template.html" %}
-{% block title %}Text{% endblock %}
-    
 
 {% block content %}
 
     
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul class="flashes">
-                {% for message in messages %}
-                    <li class="{{ 'error' if 'Error' in message else 'success' }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
+   
 
     <form method="post" action="/file" enctype="multipart/form-data">
     

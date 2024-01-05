@@ -31,7 +31,7 @@ def get_first_column_data(file_content):
     try:
         decoded_content = file_content.decode('utf-8')
         csv_reader = csv.reader(decoded_content.splitlines())
-
+        next(csv_reader)
         first_column_data = [row[0] for row in csv_reader]
 
         return first_column_data
@@ -54,8 +54,8 @@ def text():
     if request.method == "POST":
         texts = form.text.data
         model_selected = form.model.data
-        predictions = model_predict_text(texts, model_selected)
-        return render_template("text.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
+        predictions, row_predictions = model_predict_text(texts, model_selected)
+        return render_template("text.html", predictions=predictions, table=True, row_predictions=row_predictions, model_selected=model_selected, form=form)
     return render_template("text.html", table=False, form=form)
 
 
@@ -74,8 +74,8 @@ def file():
             first_column_data = get_first_column_data(file_content)
             
             if first_column_data is not None:
-                predictions = model_predict_text(first_column_data, model_selected)
-                return render_template("file.html", predictions=predictions, table=True, model_selected=model_selected, form=form)
+                predictions, row_predictions = model_predict_text(first_column_data, model_selected)
+                return render_template("file.html", predictions=predictions, row_predictions=row_predictions, table=True, model_selected=model_selected, form=form)
             else:
                 flash('First column data in CSV file must contain rows of text', 'error')
         else:

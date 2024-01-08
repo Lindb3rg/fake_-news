@@ -1,5 +1,5 @@
 function displayFileName() {
-  console.log("File input changed");  // Add this line
+  console.log("File input changed");
   var input = document.getElementById('fileInput');
   var display = document.getElementById('fileNameDisplay');
 

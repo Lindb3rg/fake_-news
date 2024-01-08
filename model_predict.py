@@ -91,7 +91,7 @@ def model_predict_text(original_text:list, modelname="svm")->dict:
     loaded_model = ""
     row_predictions = []
 
-    if modelname == "all":
+    if modelname == "all_models":
         predictions, row_predictions = all_models_predict_text(preprocessed_texts, original_text)
         return predictions, row_predictions
     
@@ -162,8 +162,10 @@ def all_models_predict_text(preprocessed_texts:list[str], original_text:list)->d
 
     logistic_predictions = loaded_logistic_model.predict(tfidf_features)
     logistic_row_predictions = loaded_logistic_model.predict_proba(tfidf_features)
+
     svm_predictions = loaded_svm_model.predict(tfidf_features)
     svm_row_predictions = loaded_svm_model.predict_proba(tfidf_features)
+    
     sequential_predictions = loaded_sequential_model.predict(new_padded_sequence)
 
     threshold = 0.5

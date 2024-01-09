@@ -33,13 +33,25 @@ else:
 loaded_tokenizer = Tokenizer()
 
 
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
 
-spacy.cli.download("en_core_web_sm")
 
-nlp = spacy.load("en_core_web_sm")
+try:
+    stop_words = set(stopwords.words('english'))
+    print("Found!")
+except LookupError:
+    print("Not found. Downloading stopwords...")
+    nltk.download('stopwords')
+    stop_words = set(stopwords.words('english'))
+
+
+try:
+    nlp = spacy.load("en_core_web_sm")
+except OSError:
+    print("Downloading en_core_web_sm...")
+    spacy.cli.download("en_core_web_sm")
+    nlp = spacy.load("en_core_web_sm")
+
+
 
 maxlen = 75
 
@@ -65,7 +77,7 @@ def preprocess_text(text:list)->list[str]:
     
     tokens = [token for token in tokens if token not in string.punctuation]
     
-    stop_words = set(stopwords.words('english'))
+    
     tokens = [token for token in tokens if token not in stop_words]
     
     stemmer = PorterStemmer()

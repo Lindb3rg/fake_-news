@@ -56,6 +56,22 @@ def text():
         texts = form.text.data
         model_selected = form.model.data
 
+        text_predictions_csv = "stored_data/saved_predictions.csv"
+        file_exists = os.path.isfile(text_predictions_csv)
+
+        with open (text_predictions_csv, 'a') as csvfile:
+            fieldnames = ['text', 'model_selected','prediction', 'probability', 'date']
+            writer = csv.DictWriter(csvfile, delimiter=',', lineterminator='\n',fieldnames=fieldnames)
+
+            if not file_exists:
+                writer.writeheader()
+
+            for text,prediction in predictions.items():
+                writer.writerow({'text':text, 'model_selected':model_selected,'prediction':prediction, 'probability':int(row_predictions), 'date':datetime.datetime.now()})         
+            
+            
+
+
         predictions, row_predictions = model_predict_text(texts, model_selected)
         flash('Text submitted and processed successfully!', 'Success!')
         return render_template("prediction_result.html", predictions=predictions, table=True, row_predictions=row_predictions, model_selected=model_selected, form=form)

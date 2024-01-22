@@ -10,19 +10,19 @@ body::before {
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    opacity: 0.2;
+    opacity: 0.1;
     z-index: -1;
 }
 
 body {
     margin: 0;
     padding: 0;
-    font-family: Helvetica, sans-serif, sans-serif;
+    font-family: 'Courier New', monospace, sans-serif, sans-serif;
 }
 
 header {
     background-color: rgb(37, 69, 95);
-    opacity: 80%;
+    opacity: 90%;
     color: rgb(255, 255, 255);
     padding: 20px; /* Increased padding for header */
     display: flex;
@@ -31,6 +31,7 @@ header {
     position: sticky;
     top: 0;
     z-index: 1000;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
 }
 h1 {
     margin: 0; /* Remove default margin for h1 */
@@ -53,6 +54,10 @@ h3 {
     margin: 0; /* Remove default margin for h1 */
     text-align: center; /* Align h1 to the left */
     color:steelblue;
+}
+
+.custom-tr{
+    padding: 10px;
 }
 
 a {
@@ -82,6 +87,30 @@ main {
     color: white;
 }
 
+.ten_more_items{
+    margin: 20px;
+}
+
+.transparent-body{
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+.custom-success-div{
+    width: 50%;
+    background-color: rgba(255, 255, 255, 0.6);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 40px;
+    padding-left: auto;
+    padding-right: auto;
+    padding-bottom: 40px;
+    transition: all 0.1s ease; /* Smooth transition when the div expands */
+    border-radius: 40px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    margin: auto; /* Center the div horizontally */
+
+}
 
 .custom-div {
     width: 80%;
@@ -162,6 +191,7 @@ main {
   
   /* Style for Submit Text button */
   .submit-button {
+    font-family: 'Courier New', monospace, sans-serif, sans-serif;
     background-color: steelblue;
     color: white;
     border: none;
@@ -175,6 +205,7 @@ main {
 
   /* Style for Upload File button */
   .upload-button {
+    font-family: 'Courier New', monospace, sans-serif, sans-serif;
     background-color: steelblue;
     color: white;
     border: none;
@@ -262,7 +293,7 @@ textarea::placeholder {
     display: flex;
     flex-direction: column;
 
-    margin-top: 10px;
+    margin-top: 20px;
     align-items: center;
     text-align: left;
 }
@@ -307,6 +338,10 @@ textarea::placeholder {
     margin-left: 10px; /* Adjust as needed for spacing between checkbox and label */
 }
 
+.your-text-field-class{
+    font-family: 'Courier New', Courier, monospace;
+}
+
 .checkbox-wrapper-62 .label svg {
     vertical-align: middle;
 }
@@ -342,12 +377,12 @@ textarea::placeholder {
 }
 
 .table-container {
-    max-width: 700px;
+    /* max-width: 700px; */
     margin: 50px auto;
     background-color: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     overflow-y: auto; /* Add this property to enable vertical scrolling */
-    max-height: 400px; /* Set the maximum height for scrolling */
+    
 }
 
 table {
@@ -372,7 +407,13 @@ tbody tr:hover {
     background-color: #f5f5f5;
 }
 
-
+.custom_th {
+    width: 50%;
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    vertical-align: middle;
+}
 
 .error_div {
     margin-top: 100px;
@@ -391,6 +432,8 @@ tbody tr:hover {
     cursor: pointer;
     color: #333; /* Change the color for hover state */
 }
+
+
 
 /* Style for the file input container */
 .file-input-container {
@@ -442,6 +485,7 @@ tbody tr:hover {
  }
 
  .your-submit-button-class {
+    font-family: 'Courier New', Courier, monospace;
     margin-top: 40px;
     border-radius: 4px;
  }

@@ -12,7 +12,7 @@
     {% if messages %}
         
             {% for message in messages %}
-            <div class="titles">
+            <div class="custom-success-div">
                 <h2>{{ 'error' if 'Error' in message else 'Success!' }}</h2>
                 <h3 class="h3_centered">{{ message }}</h3>
             </div>
@@ -21,30 +21,131 @@
         
     {% endif %}
     {% endwith %}
+        
+        {%if prediction_object.get_input_type() == "text"%}
         <div class="table-container">
             <table>
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Text</th>
                         <th>Prediction</th>
-                        <th>Model</th>
                         <th>Accuracy</th>
+                        <th>Model</th>
+                        <th>Date</th>
+                        {% if prediction_object.get_identity() == "multi"%}
+                        
+                        <th>Logistic</th>
+                        <th>SVM</th>
+                        <th>Sequential</th>
+
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for text, prediction in predictions.items() %}
                         <tr>
-                            <td>{{ text }}</td>
-                            <td>{{ prediction }}</td>
-                            <td>{{ model_selected }}</td>
-                            <td>{{ row_predictions[loop.index0] }}</td>
+                            <td>{{ prediction_object.get_id() }}</td>
+                            <td class="custom_th">{{ prediction_object.get_text() }}</td>
+                            <td>{{ prediction_object.get_prediction() }}</td>
+                            <td>{{ prediction_object.get_accuracy() }}</td>
+                            <td>{{ prediction_object.get_model_selected()}}</td>
+                            <td>{{ prediction_object.get_date() }}</td>
+                            {% if prediction_object.get_identity() == "multi"%}
+                                <td>{{prediction_object.get_model_vote("logistic")}}</td>
+                                <td>{{prediction_object.get_model_vote("svm")}}</td>
+                                <td>{{prediction_object.get_model_vote("sequential")}}</td>
+                            {% endif %}
+                            
                         </tr>
-                    {% endfor %}
                 </tbody>
             </table>
+            <div>
+                <img src="{{prediction_object.get_histogram_image()}}">
+            </div>
+            
+        </div>
+        {% endif %}
+
+
+        {%if prediction_object.get_input_type() == "file"%}
+        <div class="table-container">
+            
+            <table id="posts-table">
+                <thead>
+                    <tr class="transparent-body">
+                        <th>Group_ID</th>
+                        <th>ID</th>
+                        <th>Text</th>
+                        <th>Prediction</th>
+                        <th>Accuracy</th>
+                        <th>Model</th>
+                        <th>Date</th>
+                        {% if prediction_object.get_identity() == "multi"%}
+                        
+                        <th>Logistic</th>
+                        <th>SVM</th>
+                        <th>Sequential</th>
+
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                        
+                       
+                </tbody>
+            </table>
+            <div class="ten_more_items">
+                
+                
+
+                <a class="your-submit-button-class"  type ="submit" href="javascript:fetchMore()">
+                    <button class="submit-button">10 more predictions</button>
+                </a>
+            </div>
+            
         </div>
 
-
+        
+        <script>
+            
+            window.onload = function () {
+                fetchMore();
+            };
+            pageNo = 1;
+        
+            function fetchMore() {
+                fetch("/file_api/{{prediction_object.get_identity()}}/{{prediction_object.get_group_id()}}?page=" + pageNo)
+                    .then((response) => response.json())
+                    .then((json) => {
+                        console.log(json);
+                        pageNo = pageNo + 1;
+                        json.forEach(tableElements);
+                    });
+            }
+        
+            function tableElements(element) {
+                let tableRow = `<tr class="transparent-body">
+                    <td>${element.groupId}</td>
+                    <td>${element.Id}</td>
+                    <td>${element.Text}</td>
+                    <td>${element.Prediction}</td>
+                    <td>${element.Accuracy}</td>
+                    <td>${element.ModelSelected}</td>`;
+        
+                if ("{{prediction_object.get_identity()}}" === "multi") {
+                    tableRow += `<td>${element.Logistic}</td>
+                                <td>${element.SVM}</td>
+                                <td>${element.Sequential}</td>`;
+                }
+        
+                tableRow += `<td>${element.Date}</td>
+                </tr>`;
+        
+                document.querySelector('#posts-table tbody').innerHTML += tableRow;
+            }
+        </script>
+        
+    {% endif %}
 
     {% endif %}
 {% endblock %}

@@ -1,10 +1,13 @@
 from flask import Flask, jsonify, render_template, request, flash
+from model import MultiPrediction, SinglePrediction
 from model_predict import model_predict_text
 from form import textForm, FileForm
 import secrets
 import os
+import os.path
 import csv
-
+import pandas as pd
+from file_management import check_file_exists, manage_csv_header, get_file_properties, get_first_column_data, is_valid_csv, path_decomposer
 
 app = Flask(__name__)
 secret_key = secrets.token_hex(32)
@@ -17,24 +20,6 @@ port = int(os.environ.get('PORT', 5000))
 
 fixed_text = "All vegetarian Sanatan Dharmis only need little care about Social Distancing and enjoy long healthy life."
 
-def is_valid_csv(file_content):
-    try:
-        import csv
-        csv.reader(file_content.decode('utf-8'))
-        return True
-    except csv.Error:
-        return False
-    
-def get_first_column_data(file_content):
-    try:
-        decoded_content = file_content.decode('utf-8')
-        csv_reader = csv.reader(decoded_content.splitlines())
-        next(csv_reader)
-        first_column_data = [row[0] for row in csv_reader]
-
-        return first_column_data
-    except csv.Error:
-        return None
 
 
 
@@ -51,14 +36,68 @@ def index():
 
 @app.route('/text', methods=['POST', "GET"])
 def text():
+    check_file_exists()
     form = textForm()
     if request.method == "POST":
         texts = form.text.data
         model_selected = form.model.data
 
-        predictions, row_predictions = model_predict_text(texts, model_selected)
+        file_path, new_id = get_file_properties(model_selected, input_type="text")
+        
+        prediction_object = model_predict_text(texts, model_selected,input_type="text", new_id=new_id)
+
+        
+
+        with open (file_path, 'a') as csvfile:
+            
+            
+            
+            if model_selected != "all_models":
+
+                fieldnames = manage_csv_header(file_path, load_from_path=True)
+                writer = csv.DictWriter(csvfile, delimiter=',', lineterminator='\n',fieldnames=fieldnames)
+                
+                
+
+                
+
+                writer.writerow({'id':prediction_object.get_id(), 
+                                'text':prediction_object.get_text(),
+                                'prediction':prediction_object.get_prediction(),
+                                'accuracy':prediction_object.get_accuracy(),
+                                'model_selected':prediction_object.get_model_selected(),
+                                'date':prediction_object.get_date()})         
+            
+            else:
+
+                fieldnames = manage_csv_header(file_path, load_from_path=True)
+                
+                writer = csv.DictWriter(csvfile, delimiter=',', lineterminator='\n',fieldnames=fieldnames)
+
+                
+                
+                writer.writerow({'id':prediction_object.get_id(),
+                                'text':prediction_object.get_text(), 
+                                'prediction':prediction_object.get_prediction(), 
+                                'accuracy':prediction_object.get_accuracy(),
+                                'model_selected':prediction_object.get_model_selected(),
+                                'logistic':prediction_object.get_model_vote("logistic"),
+                                'SVM':prediction_object.get_model_vote("svm"),
+                                'sequential':prediction_object.get_model_vote("sequential"),
+                                'date':prediction_object.get_date()})        
+
+
+        
+
+        
+        
+
         flash('Text submitted and processed successfully!', 'Success!')
-        return render_template("prediction_result.html", predictions=predictions, table=True, row_predictions=row_predictions, model_selected=model_selected, form=form)
+        prediction_object.create_histogram()
+        return render_template("prediction_result.html",
+                                table=True,
+                                form=form,
+                                prediction_object=prediction_object)
 
 
     return render_template("text.html", table=False, form=form)
@@ -66,23 +105,69 @@ def text():
 
 
 
-
 @app.route('/file', methods=['POST', 'GET'])
 def file():
+    check_file_exists()
     form = FileForm()
     
     if request.method == "POST":
         model_selected = form.model.data
-        css_file = form.css_file.data
-        file_content = css_file.read()
+        csv_file = form.csv_file.data
+        file_name = csv_file.filename.split(".")[0]
+        
+        file_content = csv_file.read()
+
+        file_path, new_group_id = get_file_properties(model_selected, input_type="file")
+        
         
         if is_valid_csv(file_content):
             flash('File uploaded and processed successfully!', 'success')
             first_column_data = get_first_column_data(file_content)
             
             if first_column_data is not None:
-                predictions, row_predictions = model_predict_text(first_column_data, model_selected)
-                return render_template("prediction_result.html", predictions=predictions, row_predictions=row_predictions, table=True, model_selected=model_selected, form=form)
+
+                prediction_object = model_predict_text(first_column_data,
+                                                       model_selected,
+                                                       file_name=file_name,
+                                                       new_group_id=new_group_id)
+                
+                
+
+                with open (file_path, 'a') as csvfile:
+                    fieldnames=manage_csv_header(file_path, load_from_path=True)
+                    writer = csv.DictWriter(csvfile, delimiter=',', lineterminator='\n',fieldnames=fieldnames)
+                    
+                    if model_selected != "all_models":
+                    
+                        for object in prediction_object.get_all_prediction_objects():
+                            writer.writerow({
+                                            'group_id':prediction_object.get_group_id(),
+                                            'prediction_id':object.get_id(),
+                                            'text':object.get_text(),
+                                            'prediction':object.get_prediction(),
+                                            'accuracy':object.get_accuracy(),
+                                            'model_selected':object.get_model_selected(),
+                                            'date':object.get_date()})            
+                    else:
+                        for object in prediction_object.get_all_prediction_objects():
+                            writer.writerow({
+                                            'group_id':prediction_object.get_group_id(),
+                                            'prediction_id':object.get_id(),
+                                            'text':object.get_text(),
+                                            'prediction':object.get_prediction(),
+                                            'accuracy':object.get_accuracy(),
+                                            'model_selected':object.get_model_selected(),
+                                            'logistic':object.get_model_vote("logistic"),
+                                            'SVM':object.get_model_vote("svm"),
+                                            'sequential':object.get_model_vote("sequential"),
+                                            'date':object.get_date()})
+                
+                
+                
+                return render_template("prediction_result.html",
+                                       table=True,
+                                       form=form,
+                                       prediction_object=prediction_object)
 
             else:
                 flash('First column data in CSV file must contain rows of text', 'error')
@@ -97,9 +182,92 @@ def file():
 
 
 
-
+######## API ########
     
 
+def fetch_from_csv(csv_file_path, group_id):
+    input_type = path_decomposer(csv_file_path)
+    df = pd.read_csv(csv_file_path)
+    group_id = int(group_id)
+    group_rows = df[df['group_id'] == group_id]
+
+    predictions = []
+    if input_type[1] == "single":
+        for _, row in group_rows.iterrows():
+            
+            single_object = SinglePrediction()
+            single_object.id=row['prediction_id']
+            single_object.text=row['text']
+            single_object.prediction=row['prediction']
+            single_object.accuracy=row['accuracy']
+            single_object.model_selected=row['model_selected']
+            single_object.date=row['date']
+
+            predictions.append(single_object)
+    elif input_type[1] == "multi":
+        for _, row in group_rows.iterrows():
+            multi_object = MultiPrediction()
+            multi_object.id = row['prediction_id']
+            multi_object.text = row['text']
+            multi_object.prediction = row['prediction']
+            multi_object.accuracy = row['accuracy']
+            multi_object.model_selected = row['model_selected']
+            multi_object.set_model_vote("logistic", row['logistic'])
+            multi_object.set_model_vote("svm", row['SVM'])
+            multi_object.set_model_vote("sequential", row['sequential'])
+            multi_object.date = row['date']
+            predictions.append(multi_object)
+
+    return predictions
+
+@app.route("/file_api/<model_selected>/<id>")
+def more_predictions(id, model_selected):
+    
+    id = int(id)
+    prediction_list = []
+    page = int(request.args.get('page', 1))
+    
+    
+    if model_selected != "multi":
+        current_predictions = fetch_from_csv("stored_data/file_predictions_single_model.csv", id)
+        
+        
+        predictions = current_predictions[(page-1)*10:page*10]
+        
+        for prediction in predictions:
+            t = {
+                "groupId":id,
+                "Id": prediction.get_id(),
+                "Text": prediction.get_text(),
+                "Prediction": prediction.get_prediction(),
+                "Accuracy": prediction.get_accuracy(),
+                "ModelSelected": prediction.get_model_selected(),
+                "Date": prediction.get_date()
+            }
+            prediction_list.append(t)
+        
+        return jsonify(prediction_list)
+    
+    else:
+        current_predictions = fetch_from_csv("stored_data/file_predictions_multi_model.csv", id)
+        predictions = current_predictions[(page-1)*10:page*10]
+        
+        for prediction in predictions:
+            t = {
+                "groupId":id,
+                "Id": prediction.get_id(),
+                "Text": prediction.get_text(),
+                "Prediction": prediction.get_prediction(),
+                "Accuracy": prediction.get_accuracy(),
+                "ModelSelected": prediction.get_model_selected(),
+                "Logistic": prediction.get_model_vote("logistic"),
+                "SVM": prediction.get_model_vote("svm"),
+                "Sequential": prediction.get_model_vote("sequential"),
+                "Date": prediction.get_date()
+            }
+            prediction_list.append(t)
+        
+        return jsonify(prediction_list)
 
 
 @app.route('/api/sequential/predict', methods=['GET', 'POST'])
@@ -165,6 +333,8 @@ def all_models_predict_text():
     
 
 if __name__ == "__main__":
+    check_file_exists()
+    
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader = False)
 
     

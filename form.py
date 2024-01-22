@@ -8,9 +8,9 @@ from wtforms.validators import DataRequired, Length
 class textForm(FlaskForm):
     text = StringField("Text here", validators=[DataRequired(), Length(min=4, max=200)])
     model = RadioField('model', choices=[
-        ('sequential', 'Sequential Model'),
-        ('logistic', 'Logistic Model'),
-        ('svm', 'SVM Model'),
+        ('sequential', 'Sequential'),
+        ('logistic', 'Logistic'),
+        ('svm', 'SVM'),
         ('all_models', 'All Models'),
     ], validators=[validators.Optional()], default='svm')
     submit = SubmitField("Click To Predict")
@@ -19,18 +19,18 @@ class textForm(FlaskForm):
 
 
 class FileForm(FlaskForm):
-    css_file = FileField(
-        'Upload CSS File',
+    csv_file = FileField(
+        'Upload CSV File',
         validators=[
             FileRequired(),
-            FileAllowed(['css'], 'Only CSS files are allowed.')
+            FileAllowed(['csv'], 'Only CSV files are allowed.')
         ]
     )
 
     model = RadioField('model', choices=[
-        ('sequential', 'Sequential Model'),
-        ('logistic', 'Logistic Model'),
-        ('svm', 'SVM Model'),
+        ('sequential', 'Sequential'),
+        ('logistic', 'Logistic'),
+        ('svm', 'SVM'),
         ('all_models', 'All Models'),
     ], validators=[validators.Optional()], default='svm')
 

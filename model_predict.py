@@ -6,12 +6,14 @@ import string
 import joblib
 import pickle
 import os
+import decimal
 
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.sequence import pad_sequences
 from keras.models import load_model
 from dotenv import load_dotenv
 
+from model import FilePrediction, SinglePrediction, MultiPrediction
 
 is_heroku = 'DYNO' in os.environ
 
@@ -89,22 +91,41 @@ def preprocess_text(text:list)->list[str]:
     return tokens
 
 
+def format_float(input:float):
+
+    d = decimal.Decimal(f"{input}")
+    if (d.as_tuple().exponent * -1) > 2:
+        input = round(input,2)
+        return input
+    return input
+
+def convert_to_binary(input:float,threshold:float)->list[int]:
+    return (input >= threshold).astype(int)
 
 
 
-def model_predict_text(original_text:list, modelname="svm")->dict:
+
+def model_predict_text(original_text:list,modelname="svm",**kwargs)->dict:
     if not isinstance(original_text, list):
         original_text = [original_text]
 
+    file_name = kwargs.get("file_name")
+    new_id = kwargs.get("new_id")
+    new_group_id = kwargs.get("new_group_id")
+
+
     preprocessed_texts = [preprocess_text(x) for x in original_text]
+
+    identity = "multi" if modelname == "all_models" else "single"
 
     predictions = ""
     loaded_model = ""
     row_predictions = []
 
     if modelname == "all_models":
-        predictions, row_predictions = all_models_predict_text(preprocessed_texts, original_text)
-        return predictions, row_predictions
+        ### Fil + all_models fungerar ej ännu
+        prediction_object = all_models_predict_text(preprocessed_texts, original_text, **kwargs)
+        return prediction_object
     
     elif modelname == "svm":
         loaded_model = loaded_svm_model
@@ -131,24 +152,56 @@ def model_predict_text(original_text:list, modelname="svm")->dict:
         row_predictions = pred_proba_rows(loaded_model, new_padded_sequence, modelname)
         predictions = loaded_model.predict(new_padded_sequence)
 
-    threshold = 0.5
-    binary_predictions = (predictions >= threshold).astype(int)
+    
+    binary_predictions = convert_to_binary(predictions, threshold=0.5)
     
     
 
-    dict_of_predictions = {}
+    if file_name:
+        file_prediction_object = FilePrediction()
+        file_prediction_object.group_id = new_group_id
+        file_prediction_object.file_name = file_name
+        file_prediction_object.input_type = "file"
+        file_prediction_object.identity = identity
+
     
+
     for index, i in enumerate(binary_predictions):
+        
+        prediction_object = SinglePrediction()
+
         if i == 1:
             key = str(original_text[index])
-            dict_of_predictions[key] = "Fake"
+            prediction_object.text = key
+            prediction_object.prediction = "Fake"
+
 
         else:
             key = str(original_text[index])
-            dict_of_predictions[key] = "True"
+            prediction_object.text = key
+            prediction_object.prediction = "True"
+        
+        accuracy = row_predictions[index]
+        prediction_object.accuracy = accuracy
+        prediction_object.model_selected = modelname
+        prediction_object.identity = identity
+        prediction_object.input_type = "text"
 
+        if file_name:
+            file_prediction_object.add_prediction_object(prediction_object)
+            prediction_object.id = index
+        else:
+            prediction_object.id = new_id
+
+        
             
-    return dict_of_predictions, row_predictions
+
+        
+    if file_name:
+
+        return file_prediction_object
+
+    return prediction_object
 
 
     # prediction_data = {
@@ -163,7 +216,11 @@ def model_predict_text(original_text:list, modelname="svm")->dict:
     
 
 
-def all_models_predict_text(preprocessed_texts:list[str], original_text:list)->dict:
+def all_models_predict_text(preprocessed_texts:list[str], original_text:list, **kwargs)->dict:
+
+    file_name = kwargs.get("file_name")
+    new_id = kwargs.get("new_id")
+    new_group_id = kwargs.get("new_group_id")
 
     processed_text_strings = [' '.join(text) for text in preprocessed_texts]
     tfidf_features = loaded_tfidf_vectorizer.transform(processed_text_strings)
@@ -180,35 +237,78 @@ def all_models_predict_text(preprocessed_texts:list[str], original_text:list)->d
     sequential_predictions = loaded_sequential_model.predict(new_padded_sequence)
 
     threshold = 0.5
+
     logistic_binary_predictions = (logistic_predictions >= threshold).astype(int)
     svm_binary_predictions = (svm_predictions >= threshold).astype(int)
     sequential_binary_predictions = (sequential_predictions >= threshold).astype(int)
 
-    final_predictions = {}
-    row_pred = []
     
     
+    logistic = (str, float)
+    svm = (str, float)
+    sequential = (str, float)
+    
+    if file_name:
+        file_prediction_object = FilePrediction()
+        file_prediction_object.group_id = new_group_id
+        file_prediction_object.file_name = file_name
+        file_prediction_object.input_type = "file"
+        file_prediction_object.identity = "multi"
+    
+
     for index in range(len(logistic_binary_predictions)):
+        
+        prediction_object = MultiPrediction()
+        prediction_object.model_selected = "all_models"
+        
         votes_for_fake = 0
         predictions = 0
+       
+
         if logistic_binary_predictions[index] == 1:
             votes_for_fake +=1
             predictions += logistic_row_predictions[index,1] * 100
 
+            logistic = ("Fake",format_float(logistic_row_predictions[index,1] * 100))
+
+            
+
         if svm_binary_predictions[index] == 1:
             votes_for_fake +=1
             predictions += svm_row_predictions[index,1]*100
+            svm = ("Fake",format_float(svm_row_predictions[index,1]*100))
+            
 
         if sequential_binary_predictions[index] == 1:
             votes_for_fake +=1
             predictions += sequential_predictions[index,0]*100
+            sequential = ("Fake", format_float(sequential_predictions[index,0]*100))
 
+        
+        
         if votes_for_fake > 1:
+            
+            
             key = str(original_text[index])
-            final_predictions[key] = "Fake"
             predictions /= votes_for_fake
-            predictions = f"{predictions:.2f}%"
-            row_pred.append(predictions)
+            predictions = format_float(predictions)
+            prediction_object.text = key
+            prediction_object.prediction = "Fake"
+            prediction_object.accuracy = predictions
+            prediction_object.input_type = "text"        
+            prediction_object.set_model_vote("logistic", logistic)
+            prediction_object.set_model_vote("svm", svm)
+            prediction_object.set_model_vote("sequential", sequential)
+            
+            if file_name:
+                file_prediction_object.add_prediction_object(prediction_object)
+                prediction_object.id = index
+            
+            else:
+                prediction_object.id = new_id
+            
+        
+
 
         else:
             predictions = 0
@@ -216,21 +316,52 @@ def all_models_predict_text(preprocessed_texts:list[str], original_text:list)->d
             if logistic_binary_predictions[index] == 0:
                 predictions += logistic_row_predictions[index,0] * 100
                 votes_for_true += 1
+                logistic = ("True",format_float(logistic_row_predictions[index,0] * 100))
+
             if svm_binary_predictions[index] == 0:
                 predictions += svm_row_predictions[index,0]*100
                 votes_for_true += 1
+                svm = ("True",format_float(svm_row_predictions[index,0]*100))
+
             if sequential_binary_predictions[index] == 0:
                 predictions += (100 - (sequential_predictions[index,0]*100))
+                sequential = ("True",format_float((100 - (sequential_predictions[index,0]*100))))
                 votes_for_true += 1
 
             key = str(original_text[index])
-            final_predictions[key] = "True"
             predictions /= votes_for_true
-            predictions = f"{predictions:.2f}%"
-            row_pred.append(predictions)
+            predictions = format_float(predictions)
+            prediction_object.text = key
+            prediction_object.prediction = "True"
+            prediction_object.accuracy = predictions
+            
+            prediction_object.input_type = "text"        
+            prediction_object.set_model_vote("logistic", logistic)
+            prediction_object.set_model_vote("svm", svm)
+            prediction_object.set_model_vote("sequential", sequential)
+            
+            if file_name:
+                file_prediction_object.add_prediction_object(prediction_object)
+                prediction_object.id = index
+            else:
+                prediction_object.id = new_id
+            
+            
+            
+
     
     
-    return final_predictions, row_pred
+    if not file_name:
+        prediction_object.create_histogram()
+        return prediction_object
+    
+    return file_prediction_object
+
+
+
+    
+
+    
 
 
 
@@ -249,8 +380,9 @@ def pred_proba_rows(model, text_processor, modelname):
             pred = y_pred_binary[i]
             if pred == 0:
                 probability = 100 - probability
-        
-            probabilities = f"{probability:.2f}%"
+
+            probability = format_float(probability)
+            probabilities = probability
             row_pred_seq.append(probabilities)
         
         return row_pred_seq
@@ -261,10 +393,12 @@ def pred_proba_rows(model, text_processor, modelname):
 
     for i, (probability_0, probability_1) in enumerate(zip(probabilities[:, 0], probabilities[:, 1])):
         if probability_1 >= 0.5:
-            prob = f"{probability_1 * 100:.2f}%"
+            prob = (probability_1 * 100)
+            prob = format_float(prob)
             row_pred.append(prob)
         else:
-            prob = f"{probability_0 * 100:.2f}%"
+            prob = probability_0 * 100
+            prob = format_float(prob)
             row_pred.append(prob)
 
 

@@ -1,0 +1,3 @@
+id,text,prediction,accuracy,model_selected,logistic,SVM,sequential,date
+1,TV Globo used images of a collective funeral for the victims of a shipwreck in Lampedusa in 2013 to illustrate a story about deaths by COVID-19 in Italy.,Fake,97.23,all_models,"('Fake', 92.54)","('Fake', 99.16)","('Fake', 99.99)",2024-01-21 11:49:49.325229
+2,TV Globo used images of a collective funeral for the victims of a shipwreck in Lampedusa in 2013 to illustrate a story about deaths by COVID-19 in Italy.,Fake,97.23,all_models,"('Fake', 92.54)","('Fake', 99.16)","('Fake', 99.99)",2024-01-21 11:50:02.770210

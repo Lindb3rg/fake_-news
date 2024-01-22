@@ -13,3 +13,4 @@ API/post_to_api.py
 requirements.txt
 notebooks/pretrained_word_vectors
 notebooks/sequential/synthesizer
+static/model_images

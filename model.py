@@ -334,7 +334,7 @@ class FilePrediction:
         # Save the merged image
         date = datetime.datetime.now()
         date = str(self.date).replace(" ", "_")
-        date = str(self.date).replace(":", "-")
+        date = date.replace(":", "-")
         save_path = f"static/model_images/all_models_images/barplot_file_all_images_{date}.png"
         self.barplot_file_all_images = f"barplot_file_all_images_{date}.png"
         plt.savefig(save_path, format='png',bbox_inches='tight', pad_inches=0)
@@ -417,6 +417,7 @@ class FilePrediction:
         ax.grid(True, linestyle='-', linewidth=0.5, alpha=0.1, color=dark_blue_color, which='both')
 
         date = str(self.date).replace(" ", "_")
+        date = date.replace(":", "-")
         save_path = f"static/model_images/all_models_images/barplot_{date}.png"
         self.barplot_name = f"barplot_{date}.png"
         fig.savefig(save_path, format='png')
@@ -473,6 +474,7 @@ class FilePrediction:
         ax.grid(True, linestyle='-', linewidth=0.5, alpha=0.1, color=dark_green_color, which='both')
 
         date = str(self.date).replace(" ", "_")
+        date = date.replace(":", "-")
         save_path = f"static/model_images/all_models_images/barplot_file_{date}.png"
         self.barplot_file_name = f"barplot_file_{date}.png"
         fig.savefig(save_path, format='png')

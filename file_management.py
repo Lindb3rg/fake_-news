@@ -2,6 +2,22 @@ import csv
 import os
 import pandas as pd
 from model import SinglePrediction, MultiPrediction
+import platform
+
+# Get the system's operating system
+os_system = platform.system()
+
+
+
+if os_system == 'Windows':
+    csv_encoder = 'cp1252'
+    
+elif os_system == 'Darwin':
+    csv_encoder='utf-8'
+    
+else:
+    print("Running on a different operating system")
+
 
 
 def path_decomposer(path:str)->tuple:
@@ -14,7 +30,7 @@ def path_decomposer(path:str)->tuple:
 
 def fetch_from_csv(csv_file_path, group_id):
     input_type = path_decomposer(csv_file_path)
-    df = pd.read_csv(csv_file_path, encoding='utf-8')
+    df = pd.read_csv(csv_file_path, encoding=csv_encoder)
     group_id = int(group_id)
     group_rows = df[df['group_id'] == group_id]
 
@@ -100,7 +116,7 @@ def manage_csv_header(csv_file_path:str, create_from_path: bool=False,load_from_
 
 def fetch_last_id_from_csv(csv_file_path:str,input_type:str)-> int:
     try:
-        df = pd.read_csv(csv_file_path, encoding='utf-8')
+        df = pd.read_csv(csv_file_path, encoding=csv_encoder)
         if not df.empty:
             if input_type == "file":
                 
@@ -152,9 +168,9 @@ def get_file_properties(model_selected, input_type):
 
 
 def remove_empty_rows(csv_file):
-    df = pd.read_csv(csv_file, encoding='utf-8')
+    df = pd.read_csv(csv_file, encoding=csv_encoder)
     df = df.dropna(how='all')
-    df.to_csv(csv_file, index=False, encoding='utf-8')
+    df.to_csv(csv_file, index=False, encoding=csv_encoder)
 
 
 def check_file_exists():

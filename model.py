@@ -37,6 +37,7 @@ class SinglePrediction:
 
         
         date = str(self.date).replace(" ", "_")
+        date = str(self.date).replace(":", "-")
         save_path = f"static/model_images/single_model_images/{self.model_selected}_histogram_{date}.png"
         self.image_name = f"{self.model_selected}_histogram_{date}.png"
         fig.savefig(save_path, format='png')
@@ -122,6 +123,7 @@ class MultiPrediction:
 
         # date = self.date
         date = str(self.date).replace(" ", "_")
+        date = str(self.date).replace(":", "-")
         save_path = f"static/model_images/all_models_images/histogram_{date}.png"
         self.image_name = f"histogram_{date}.png"
         fig.savefig(save_path, format='png')
@@ -332,6 +334,7 @@ class FilePrediction:
         # Save the merged image
         date = datetime.datetime.now()
         date = str(self.date).replace(" ", "_")
+        date = str(self.date).replace(":", "-")
         save_path = f"static/model_images/all_models_images/barplot_file_all_images_{date}.png"
         self.barplot_file_all_images = f"barplot_file_all_images_{date}.png"
         plt.savefig(save_path, format='png',bbox_inches='tight', pad_inches=0)

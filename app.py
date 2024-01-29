@@ -1,13 +1,20 @@
-from flask import Flask, jsonify, render_template, request, flash
-from model import MultiPrediction, SinglePrediction
-from model_predict import model_predict_text
+from io import BytesIO
+from flask import Flask, jsonify, render_template, request, flash, send_file
+import requests
 from form import textForm, FileForm
 import secrets
 import os
 import os.path
 import csv
 import pandas as pd
-from file_management import check_file_exists, manage_csv_header, get_file_properties, get_first_column_data, is_valid_csv, path_decomposer
+
+from file_management import check_file_exists, fetch_from_csv, manage_csv_header, get_file_properties, get_first_column_data, is_valid_csv
+
+from multi_model_predict import multi_model_predict_text
+from single_model_predict import single_model_predict_text
+
+
+
 
 app = Flask(__name__)
 secret_key = secrets.token_hex(32)
@@ -43,9 +50,13 @@ def text():
         model_selected = form.model.data
 
         file_path, new_id = get_file_properties(model_selected, input_type="text")
+            
+        if model_selected == "all_models":
+            
+            prediction_object = multi_model_predict_text(texts,input_type="text", new_id=new_id)
+        else:
+            prediction_object = single_model_predict_text(texts, model_selected,input_type="text", new_id=new_id)
         
-        prediction_object = model_predict_text(texts, model_selected,input_type="text", new_id=new_id)
-
         
 
         with open (file_path, 'a') as csvfile:
@@ -125,11 +136,18 @@ def file():
             first_column_data = get_first_column_data(file_content)
             
             if first_column_data is not None:
-
-                prediction_object = model_predict_text(first_column_data,
-                                                       model_selected,
-                                                       file_name=file_name,
-                                                       new_group_id=new_group_id)
+                
+                if model_selected == "all_models":
+                    
+                    prediction_object = multi_model_predict_text(first_column_data,
+                                                          input_type="file",
+                                                          file_name=file_name,
+                                                          new_group_id=new_group_id)
+                else:
+                    prediction_object = single_model_predict_text(first_column_data,
+                                                        model_selected,
+                                                        file_name=file_name,
+                                                        new_group_id=new_group_id)
                 
                 
 
@@ -185,40 +203,25 @@ def file():
 ######## API ########
     
 
-def fetch_from_csv(csv_file_path, group_id):
-    input_type = path_decomposer(csv_file_path)
-    df = pd.read_csv(csv_file_path)
-    group_id = int(group_id)
-    group_rows = df[df['group_id'] == group_id]
 
-    predictions = []
-    if input_type[1] == "single":
-        for _, row in group_rows.iterrows():
-            
-            single_object = SinglePrediction()
-            single_object.id=row['prediction_id']
-            single_object.text=row['text']
-            single_object.prediction=row['prediction']
-            single_object.accuracy=row['accuracy']
-            single_object.model_selected=row['model_selected']
-            single_object.date=row['date']
+@app.route("/<path:url>")
+def barplot(url):
+    try:
+        # Fetch the image from the provided URL
+        response = requests.get(url)
+        response.raise_for_status()
 
-            predictions.append(single_object)
-    elif input_type[1] == "multi":
-        for _, row in group_rows.iterrows():
-            multi_object = MultiPrediction()
-            multi_object.id = row['prediction_id']
-            multi_object.text = row['text']
-            multi_object.prediction = row['prediction']
-            multi_object.accuracy = row['accuracy']
-            multi_object.model_selected = row['model_selected']
-            multi_object.set_model_vote("logistic", row['logistic'])
-            multi_object.set_model_vote("svm", row['SVM'])
-            multi_object.set_model_vote("sequential", row['sequential'])
-            multi_object.date = row['date']
-            predictions.append(multi_object)
+        # Create a BytesIO object to hold the image data
+        image_data = BytesIO(response.content)
 
-    return predictions
+        # Set the content type to image/png (adjust based on the image format)
+        return send_file(image_data, mimetype='image')
+
+    except requests.exceptions.RequestException as e:
+        # Handle exceptions (e.g., URL not reachable)
+        return f"Error fetching image: {e}", 500
+    
+
 
 @app.route("/file_api/<model_selected>/<id>")
 def more_predictions(id, model_selected):
@@ -279,12 +282,12 @@ def sequential_predict_text():
         input_text = data.get('text', "")
         
         
-        predict_text = model_predict_text(input_text, "sequential")
+        predict_text = single_model_predict_text(input_text, "sequential")
         return jsonify(predict_text)
     else:
 
         
-        predict_text = model_predict_text(fixed_text, "sequential")
+        predict_text = single_model_predict_text(fixed_text, "sequential")
         return jsonify({"Original Text": fixed_text, "Sequential Prediction Result": predict_text})
 
 
@@ -294,12 +297,12 @@ def svm_predict_text():
         
         data = request.get_json()
         input_text = data.get('text', "")
-        predict_text = model_predict_text(input_text, "svm")
+        predict_text = single_model_predict_text(input_text, "svm")
         return jsonify(predict_text)
     
     else:
         
-        predict_text = model_predict_text(fixed_text, "svm")
+        predict_text = single_model_predict_text(fixed_text, "svm")
         return jsonify({"Original Text": fixed_text, "SVM Results": predict_text})
 
 
@@ -309,12 +312,12 @@ def logistic_predict_text():
 
         data = request.get_json()
         input_text = data.get('text', "")        
-        predict_text = model_predict_text(input_text, "logistic")
+        predict_text = single_model_predict_text(input_text, "logistic")
 
         return jsonify(predict_text)
     else:
         
-        predict_text = model_predict_text(fixed_text, "logistic")
+        predict_text = single_model_predict_text(fixed_text, "logistic")
         return jsonify({"Original Text": fixed_text, "Logistic Model": predict_text})
 
 
@@ -324,11 +327,11 @@ def all_models_predict_text():
         
         data = request.get_json()
         input_text = data.get('text', "")        
-        predict_text = model_predict_text(input_text, "all_models")
+        predict_text = single_model_predict_text(input_text, "all_models")
 
         return jsonify(predict_text)
     else:
-        predict_text = model_predict_text(fixed_text, "all_models")
+        predict_text = single_model_predict_text(fixed_text, "all_models")
         return jsonify({"Original Text": fixed_text, "Best result från all Models": predict_text})
     
 

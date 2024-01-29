@@ -95,6 +95,41 @@ main {
     background-color: rgba(255, 255, 255, 0.6);
 }
 
+#popup {
+    display: none;
+    position: fixed;
+    border-radius: 20px;
+    
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid #ccc;
+    background-color: #fff;
+    padding: 50px;
+    z-index: 1000;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Style for the close button */
+#closeBtn {
+    background-color:white; 
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+    color: black;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    cursor: pointer;
+    border-radius: 100%;
+}
+
+#closeBtn:hover {
+    background-color:rgb(206, 206, 206);
+    
+}
+
 .custom-success-div{
     width: 50%;
     background-color: rgba(255, 255, 255, 0.6);

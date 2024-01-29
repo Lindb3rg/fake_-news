@@ -1,6 +1,7 @@
 import csv
 import os
 import pandas as pd
+from model import SinglePrediction, MultiPrediction
 
 
 def path_decomposer(path:str)->tuple:
@@ -10,6 +11,41 @@ def path_decomposer(path:str)->tuple:
     return (input_type, models)
 
 
+
+def fetch_from_csv(csv_file_path, group_id):
+    input_type = path_decomposer(csv_file_path)
+    df = pd.read_csv(csv_file_path)
+    group_id = int(group_id)
+    group_rows = df[df['group_id'] == group_id]
+
+    predictions = []
+    if input_type[1] == "single":
+        for _, row in group_rows.iterrows():
+            
+            single_object = SinglePrediction()
+            single_object.id=row['prediction_id']
+            single_object.text=row['text']
+            single_object.prediction=row['prediction']
+            single_object.accuracy=row['accuracy']
+            single_object.model_selected=row['model_selected']
+            single_object.date=row['date']
+
+            predictions.append(single_object)
+    elif input_type[1] == "multi":
+        for _, row in group_rows.iterrows():
+            multi_object = MultiPrediction()
+            multi_object.id = row['prediction_id']
+            multi_object.text = row['text']
+            multi_object.prediction = row['prediction']
+            multi_object.accuracy = row['accuracy']
+            multi_object.model_selected = row['model_selected']
+            multi_object.set_model_vote("logistic", row['logistic'])
+            multi_object.set_model_vote("svm", row['SVM'])
+            multi_object.set_model_vote("sequential", row['sequential'])
+            multi_object.date = row['date']
+            predictions.append(multi_object)
+
+    return predictions
 
 
 

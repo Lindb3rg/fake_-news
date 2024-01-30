@@ -2,6 +2,7 @@ import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import mode
+import os
 
 from formatting_functions import format_float
 plt.switch_backend('Agg')

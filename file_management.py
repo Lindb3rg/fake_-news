@@ -30,7 +30,7 @@ def path_decomposer(path:str)->tuple:
 
 def fetch_from_csv(csv_file_path, group_id):
     input_type = path_decomposer(csv_file_path)
-    df = pd.read_csv(csv_file_path, encoding=csv_encoder)
+    df = pd.read_csv(csv_file_path, encoding='utf-8')
     group_id = int(group_id)
     group_rows = df[df['group_id'] == group_id]
 
@@ -90,7 +90,7 @@ def manage_csv_header(csv_file_path:str, create_from_path: bool=False,load_from_
     
     elif create_from_path:
         try:
-            with open(csv_file_path, 'w') as csvfile:
+            with open(csv_file_path, 'w', encoding='utf-8', errors='replace') as csvfile:
                 if input_type_tuple == ('text', 'single'):
 
                     fieldnames = header_text_single
@@ -116,7 +116,7 @@ def manage_csv_header(csv_file_path:str, create_from_path: bool=False,load_from_
 
 def fetch_last_id_from_csv(csv_file_path:str,input_type:str)-> int:
     try:
-        df = pd.read_csv(csv_file_path, encoding=csv_encoder)
+        df = pd.read_csv(csv_file_path, encoding='utf-8')
         if not df.empty:
             if input_type == "file":
                 
@@ -168,9 +168,9 @@ def get_file_properties(model_selected, input_type):
 
 
 def remove_empty_rows(csv_file):
-    df = pd.read_csv(csv_file, encoding=csv_encoder)
+    df = pd.read_csv(csv_file, encoding='utf-8')
     df = df.dropna(how='all')
-    df.to_csv(csv_file, index=False, encoding=csv_encoder)
+    df.to_csv(csv_file, index=False, encoding='utf-8')
 
 
 def check_file_exists():
@@ -186,7 +186,7 @@ def check_file_exists():
             manage_csv_header(file_path, create_from_path=True)
         
         else:
-            with open(file_path, 'r', newline='') as csvfile:
+            with open(file_path, 'r', newline='', encoding='utf-8', errors='replace') as csvfile:
                 reader = csv.reader(csvfile)
         
                 

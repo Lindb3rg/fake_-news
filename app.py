@@ -151,7 +151,7 @@ def file():
                 
                 
 
-                with open (file_path, 'a') as csvfile:
+                with open (file_path, 'a', encoding='utf-8') as csvfile:
                     fieldnames=manage_csv_header(file_path, load_from_path=True)
                     writer = csv.DictWriter(csvfile, delimiter=',', lineterminator='\n',fieldnames=fieldnames)
                     

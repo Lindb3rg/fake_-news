@@ -1,7 +1,7 @@
 import decimal
 
 
-def format_float(input:float):
+def format_float(input:float)->float:
 
     d = decimal.Decimal(f"{input}")
     if (d.as_tuple().exponent * -1) > 2:

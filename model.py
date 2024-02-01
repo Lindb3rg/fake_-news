@@ -33,7 +33,6 @@ class SinglePrediction:
         ax.set_yticks(np.arange(0, 101, 5))
         ax.grid(True)
 
-        
         date = str(self.date).replace(" ", "_")
         date = str(self.date).replace(":", "-")
         save_path = f"static/model_images/single_model_images/{self.model_selected}_histogram_{date}.png"
@@ -45,29 +44,29 @@ class SinglePrediction:
         img_dir = "static/model_images/single_model_images/"
         return f"{img_dir}{self.image_name}"
 
-    def get_text(self):
+    def get_text(self)->str:
         return self.text
     
-    def get_prediction(self):
+    def get_prediction(self)->str:
         return self.prediction
 
-    def get_accuracy(self):
+    def get_accuracy(self)-> float:
         return self.accuracy
     
-    def get_model_selected(self):        
+    def get_model_selected(self)->str:        
         return self.model_selected
     
-    def get_identity(self):
+    def get_identity(self)->str:
         return self.identity
     
-    def get_date(self):
+    def get_date(self)->datetime:
         return self.date
     
-    def get_input_type(self):
+    def get_input_type(self)->str:
         return self.input_type
     
-    def get_id(self):
-        return self.id  
+    def get_id(self)->int:
+        return self.id 
 
 
     
@@ -90,7 +89,7 @@ class MultiPrediction:
         self.bar_blot_image_name = str
         self.input_type = str
 
-    def _collect_probabilities(self):
+    def _collect_probabilities(self)->list[str]:
         probabilities = []
         probabilities = [self.model[model][1] for model in self.model]
         probabilities.append(self.accuracy)
@@ -98,13 +97,13 @@ class MultiPrediction:
     
     
     
-    def get_histogram_image(self):
+    def get_histogram_image(self)->str:
         img_dir = "static/model_images/all_models_images/"
         return f"{img_dir}{self.image_name}"
 
 
 
-    def create_histogram(self):
+    def create_histogram(self)->None:
         models = ["logistic","svm","sequential","all_models"]
         model_probabilities = self._collect_probabilities()
         
@@ -119,21 +118,20 @@ class MultiPrediction:
         ax.set_yticks(np.arange(0, 101, 5))
         ax.grid(True)
 
-        # date = self.date
+        
         date = str(self.date).replace(" ", "_")
-        date = str(self.date).replace(":", "-")
+        date = date.replace(":", "-")
         save_path = f"static/model_images/all_models_images/histogram_{date}.png"
         self.image_name = f"histogram_{date}.png"
         fig.savefig(save_path, format='png')
         return
     
-    def get_majority_prediction(self):
+    def get_majority_prediction(self)->None:
     
         true = 0
         true_total = 0
         fake = 0
         fake_total = 0
-        
         
         for value in self.model.values():
             if value[0] == "True":
@@ -152,51 +150,56 @@ class MultiPrediction:
             self.prediction = "Fake"
             self.accuracy = format_float((fake_total/fake))
 
-    def get_prediction_for_final_barplot(self):
+
+
+    def get_prediction_for_final_barplot(self)-> tuple[str,float]:
         return self.prediction,self.accuracy
 
     
-    def get_identity(self):
+    def get_identity(self)->str:
         return self.identity
 
-    def get_text(self):
+    def get_text(self)->str:
         return self.text
     
-    def get_prediction(self):
+    def get_prediction(self)->str:
         return self.prediction
 
-    def get_accuracy(self):
+    def get_accuracy(self)-> float:
         return self.accuracy
     
-    def get_model_selected(self):        
+    def get_model_selected(self)->str:        
         return self.model_selected
 
-    def get_model_vote(self, model:str):
+    def get_model_vote(self, model:str)-> tuple[str,float] | None:
         if model in self.model:
             return self.model[model]
     
-    def get_date(self):
+    def get_date(self)->datetime:
         return self.date
     
-    def set_model_vote(self, model:str, vote_tuple:tuple):
-        self.model[model] = vote_tuple
-
-    def set_image_link(self, link:str):
-        self.image_link = link
-
-    def get_input_type(self):
+    def get_input_type(self)->str:
         return self.input_type
     
-    def get_id(self):
+    def get_id(self)->int:
         return self.id
     
-    def get_all_votes(self):
+    def get_all_votes(self)->list:
         list_of_votes = []
         for model in self.model:
             list_of_votes.append(0 if self.model[model][0]=="True" else 1)
             
         list_of_votes.append(0 if self.prediction == "True" else 1)
         return list_of_votes
+
+    def set_model_vote(self, model:str, vote_tuple:tuple)->None:
+        self.model[model] = vote_tuple
+
+    def set_image_link(self, link:str)->None:
+        self.image_link = link
+
+
+
 
 
 class FilePrediction:
@@ -285,43 +288,28 @@ class FilePrediction:
         return binary_predictions
     
     
-    def summerize_images(self,img_1,img_2):
+    def summerize_images(self,img_1,img_2)->None:
         
-        # reading images 
+        
         Image1 = plt.imread(img_1) 
         Image2 = plt.imread(img_2) 
         
-        
-        
         fig = plt.figure(figsize=(15,10.5)) 
-  
-        # setting values to rows and column variables 
         rows = 2
         columns = 1
-        
-        
-        
-        
-        # Adds a subplot at the 1st position 
+    
         fig.add_subplot(rows, columns, 1) 
         
-        # showing image 
         plt.imshow(Image1) 
         plt.axis('off') 
         plt.title("Barplot per Model") 
         
-        # Adds a subplot at the 2nd position 
         fig.add_subplot(rows, columns, 2) 
         
-        # showing image 
         plt.imshow(Image2) 
         plt.axis('off') 
         plt.title("Barplot for File") 
         
-       
-
-        # Save the merged image
-        date = datetime.datetime.now()
         date = str(self.date).replace(" ", "_")
         date = date.replace(":", "-")
         save_path = f"static/model_images/all_models_images/barplot_file_all_images_{date}.png"
@@ -329,11 +317,6 @@ class FilePrediction:
         plt.savefig(save_path, format='png',bbox_inches='tight', pad_inches=0)
         return
         
-
-        
-        
-    
-    
     
     def draw_bar_plots(self)->None:
 
@@ -342,13 +325,7 @@ class FilePrediction:
         if self.barplot_file_all_images == "":
             self.summerize_images(plot_1,plot_2)
         
-            
-            
-        
-    
-         
-        
-    
+
 
     def bar_plot_all_predictions(self):
         
@@ -362,21 +339,16 @@ class FilePrediction:
         gold_color = (1.0, 0.84, 0.0)
         dark_blue_color = (0.0, 0.0, 0.5)
 
-        # Count the occurrences of each prediction for each model
         counts_0 = np.sum(all_predictions == 0, axis=0)
         counts_1 = np.sum(all_predictions == 1, axis=0)
         total_instances = len(all_predictions)
 
-        # Calculate percentages
         percentage_0 = (counts_0 / total_instances) * 100
         percentage_1 = (counts_1 / total_instances) * 100
 
-        # Set the figure size and style
-        # sns.set(style="whitegrid")  # Use a seaborn style
         fig, ax = plt.subplots(figsize=(10, 6))
 
-        # Plotting the grouped bar chart
-        width = 0.35  # Width of each bar
+        width = 0.35
         ind = np.arange(len(model_names))
 
         bars_0 = ax.bar(ind - width/2, percentage_0, width, label='Predicted 0', color=gold_color)
@@ -389,7 +361,6 @@ class FilePrediction:
         ax.set_xticklabels(model_names, fontsize=12)
         ax.legend(fontsize=12)
 
-        # Add percentage labels on top of each bar with a different color
         for bar_0, bar_1 in zip(bars_0, bars_1):
             height_0 = bar_0.get_height()
             height_1 = bar_1.get_height()
@@ -400,9 +371,8 @@ class FilePrediction:
             ax.annotate(f'{height_1:.2f}%', xy=(bar_1.get_x() + bar_1.get_width() / 2, height_1),
                         xytext=(0, 3), textcoords="offset points", ha='center', va='bottom', color='black', fontsize=10)
 
-        # Set the y-axis scale to show 0-100%
         ax.set_yticks(np.arange(0, 101, 5))
-        # Add grid lines
+
         ax.grid(True, linestyle='-', linewidth=0.5, alpha=0.1, color=dark_blue_color, which='both')
 
         date = str(self.date).replace(" ", "_")
@@ -410,30 +380,24 @@ class FilePrediction:
         save_path = f"static/model_images/all_models_images/barplot_{date}.png"
         self.barplot_name = f"barplot_{date}.png"
         fig.savefig(save_path, format='png')
+        
         return
     
     
+    
     def bar_plot_for_file(self):
-        
         
         model_names = ["File"]
         gold_color = (1.0, 0.84, 0.0)
         dark_green_color = (0.0, 0.0, 0.5)
         dark_green_color = (0.0, 0.5, 0.0)
 
-        # Count the occurrences of each prediction for each model
-        
-
-        # Calculate percentages
         percentage_0 = self.file_total_true_percentage
         percentage_1 = self.file_total_fake_percentage
 
-        # Set the figure size and style
-        # sns.set(style="whitegrid")  # Use a seaborn style
         fig, ax = plt.subplots(figsize=(10, 6))
 
-        # Plotting the grouped bar chart
-        width = 0.35  # Width of each bar
+        width = 0.35
         ind = np.arange(len(model_names))
 
         bars_0 = ax.bar(ind - width/2, percentage_0, width, label='Predicted 0', color=gold_color)
@@ -446,7 +410,6 @@ class FilePrediction:
         ax.set_xticklabels(model_names, fontsize=12)
         ax.legend(fontsize=12)
 
-        # Add percentage labels on top of each bar with a different color
         for bar_0, bar_1 in zip(bars_0, bars_1):
             height_0 = bar_0.get_height()
             height_1 = bar_1.get_height()
@@ -457,14 +420,12 @@ class FilePrediction:
             ax.annotate(f'{height_1:.2f}%', xy=(bar_1.get_x() + bar_1.get_width() / 2, height_1),
                         xytext=(0, 3), textcoords="offset points", ha='center', va='bottom', color='black', fontsize=10)
 
-        # Set the y-axis scale to show 0-100%
         ax.set_yticks(np.arange(0, 101, 5))
-        # Add grid lines
         ax.grid(True, linestyle='-', linewidth=0.5, alpha=0.1, color=dark_green_color, which='both')
-
         date = str(self.date).replace(" ", "_")
         date = date.replace(":", "-")
         save_path = f"static/model_images/all_models_images/barplot_file_{date}.png"
         self.barplot_file_name = f"barplot_file_{date}.png"
         fig.savefig(save_path, format='png')
+        
         return

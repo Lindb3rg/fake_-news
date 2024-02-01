@@ -8,7 +8,6 @@ from single_model_predict import preprocess_text, loaded_logistic_model,loaded_s
 
 def preprocess_for_specific_models(original_text: list, models:list = None)-> dict:
     
-    
     preprocessed_texts = [preprocess_text(x) for x in original_text]
 
     maxlen = 75
@@ -125,10 +124,3 @@ def multi_model_predict_text(texts: list|str,input_type:str,**kwargs)-> MultiPre
     file_object.draw_bar_plots()
     
     return file_object
-
-
-
-    
-
-
-

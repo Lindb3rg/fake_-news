@@ -1,34 +1,41 @@
 import requests as rq
 
 """
-This function is used to POST a text to one or all of our models. 
+This function is used to POST a text to one or all of our models. Connect automation and database to own choosing. 
+
+Post query can also be done via curl, example:
+
+curl -X POST -H "Content-Type: application/json" -d '{"text":<text_for_prediction>}' -k http://<web adress>/api/<model of choosing>/predict
+
+current_models = [
+    
+    "svm",
+    "sequential",
+    "logistic",
+    "all_models"]
 
 """
 
 
 
 
+
+
 def post_to_our_API(text:str, model:str)->dict:
 
-    current_models = ["svm",
-                      "sequential",
-                      "logistic",
-                      "all_models"]
     
-    if model in current_models:
         
-        BASE_URL = f'https://fake-news-version-1-8664e27edd64.herokuapp.com/api/{model}/predict'
-        payload = {"text":text}
-        
-        response = rq.post(BASE_URL, json=payload)
+    BASE_URL = f'https://<web adress>/api/{model}/predict'
+    payload = {"text":text}
+    
+    response = rq.post(BASE_URL, json=payload)
 
 
-        if response.status_code == 200:
-            return response.json()
-        else:
-            print("Error:", response.text)
+    if response.status_code == 200:
+        return response.json()
     else:
-        return f"Model not found"
+        print("Error:", response.text)
+    
 
 
 

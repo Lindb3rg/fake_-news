@@ -69,6 +69,8 @@ def multi_model_predict_text(texts: list|str,input_type:str,**kwargs)-> MultiPre
     file_name = kwargs.get("file_name")
     new_id = kwargs.get("new_id")
     new_group_id = kwargs.get("new_group_id")
+    if input_type == "api":
+        new_id = "api"
     
     
     
@@ -128,7 +130,7 @@ def multi_model_predict_text(texts: list|str,input_type:str,**kwargs)-> MultiPre
             if file_name:
                 file_object.add_prediction_object(prediction_object)
                 prediction_object.id = index
-            else:
+            else:    
                 prediction_object.id = new_id
     
     

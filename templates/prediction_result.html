@@ -23,6 +23,7 @@
         
     {% endif %}
     {% endwith %}
+    {% if (prediction_object.get_input_type() == "file") and (prediction_object.get_identity() == "multi")%}
     <div class="buttons">
         <button class="submit-button" onclick="fetchImage()">View barplots</button>
     </div>
@@ -30,6 +31,7 @@
         <span id="closeBtn" onclick="closePopup()">&times;</span>
         <img id="popupImage" alt="Fetched Image">
     </div>
+    {% endif %}
         
         {%if prediction_object.get_input_type() == "text"%}
         <div class="table-container">
@@ -69,7 +71,9 @@
                 </tbody>
             </table>
             <div>
+                {% if prediction_object.get_identity() == "multi"%}
                 <img src="{{prediction_object.get_histogram_image()}}">
+                {% endif %}
             </div>
             
         </div>
@@ -132,14 +136,7 @@
                     });
             }
 
-            function fetchAllBarplots() {
-                fetch("/barplot/{{prediction_object.draw_bar_plots()}}")
-                    .then((response) => response.json())
-                    .then((json) => {
-                        console.log(json);
-                        json.forEach(tableElements);
-                    });
-            }
+            
 
 
 
@@ -165,9 +162,17 @@
         
                 document.querySelector('#posts-table tbody').innerHTML += tableRow;
             }
-            
-            async function fetchImage() {
-            const imageUrl = "{{prediction_object.get_all_barplots()}}";  // Replace with your Flask route URL
+        </script>
+        
+        
+
+
+
+
+        {% if prediction_object.get_identity() == "multi"   %}
+        <script>
+        async function fetchImage() {
+            const imageUrl = "{{ prediction_object.get_all_barplots() }}";
 
             try {
                 const response = await fetch(imageUrl);
@@ -186,17 +191,20 @@
             } catch (error) {
                 console.error("Error fetching image:", error);
             }
-            }
+        }
 
-            function closePopup() {
-                // Close the popup window
-                document.getElementById("popup").style.display = "none";
-            }
-
-
+        function closePopup() {
+            // Close the popup window
+            document.getElementById("popup").style.display = "none";
+        }
         </script>
+        {% endif %}
+
+
+
         
+                
     {% endif %}
 
-    {% endif %}
+{% endif%}
 {% endblock %}

@@ -103,6 +103,9 @@ def single_model_predict_text(original_text:list,modelname="svm",**kwargs)->dict
     file_name = kwargs.get("file_name")
     new_id = kwargs.get("new_id")
     new_group_id = kwargs.get("new_group_id")
+    input_type = kwargs.get("input_type")
+    if input_type == "api":
+        new_id = "api"
 
 
     preprocessed_texts = [preprocess_text(x) for x in original_text]
@@ -172,7 +175,10 @@ def single_model_predict_text(original_text:list,modelname="svm",**kwargs)->dict
         prediction_object.accuracy = accuracy
         prediction_object.model_selected = modelname
         prediction_object.identity = "single"
-        prediction_object.input_type = "text"
+        if input_type == "api":
+            prediction_object.input_type = input_type
+        else:
+            prediction_object.input_type = "text"
 
         if file_name:
             file_prediction_object.add_prediction_object(prediction_object)

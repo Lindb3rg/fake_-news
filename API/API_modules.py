@@ -16,11 +16,6 @@ current_models = [
 
 """
 
-
-
-
-
-
 def post_to_our_API(text:str, model:str)->dict:
 
     

@@ -8,7 +8,7 @@ import os.path
 import csv
 import pandas as pd
 
-from file_management import check_file_exists, fetch_from_csv, manage_csv_header, get_file_properties, get_first_column_data, is_valid_csv
+from file_management import check_file_exists, fetch_from_csv, manage_csv_header, get_file_properties, get_first_column_data, is_valid_csv, start_up_process
 
 from multi_model_predict import multi_model_predict_text
 from single_model_predict import single_model_predict_text
@@ -29,6 +29,13 @@ fixed_text = "All vegetarian Sanatan Dharmis only need little care about Social 
 
 
 
+
+is_heroku = 'DYNO' in os.environ
+
+if is_heroku:
+    current_system = "heroku"
+else:
+    current_system = "local"
 
 
 
@@ -54,6 +61,7 @@ def text():
         if model_selected == "all_models":
             
             prediction_object = multi_model_predict_text(texts,input_type="text", new_id=new_id)
+            prediction_object.create_histogram()
         else:
             prediction_object = single_model_predict_text(texts, model_selected,input_type="text", new_id=new_id)
         
@@ -98,13 +106,8 @@ def text():
                                 'date':prediction_object.get_date()})        
 
 
-        
-
-        
-        
-
         flash('Text submitted and processed successfully!', 'Success!')
-        prediction_object.create_histogram()
+        
         return render_template("prediction_result.html",
                                 table=True,
                                 form=form,
@@ -207,18 +210,15 @@ def file():
 @app.route("/<path:url>")
 def barplot(url):
     try:
-        # Fetch the image from the provided URL
+
         response = requests.get(url)
         response.raise_for_status()
-
-        # Create a BytesIO object to hold the image data
+        
         image_data = BytesIO(response.content)
 
-        # Set the content type to image/png (adjust based on the image format)
         return send_file(image_data, mimetype='image')
 
     except requests.exceptions.RequestException as e:
-        # Handle exceptions (e.g., URL not reachable)
         return f"Error fetching image: {e}", 500
     
 
@@ -273,70 +273,57 @@ def more_predictions(id, model_selected):
         return jsonify(prediction_list)
 
 
-@app.route('/api/sequential/predict', methods=['GET', 'POST'])
-def sequential_predict_text():
-
-    if request.method == 'POST':
-        
-        data = request.get_json()
-        input_text = data.get('text', "")
-        
-        
-        predict_text = single_model_predict_text(input_text, "sequential")
-        return jsonify(predict_text)
-    else:
-
-        
-        predict_text = single_model_predict_text(fixed_text, "sequential")
-        return jsonify({"Original Text": fixed_text, "Sequential Prediction Result": predict_text})
 
 
-@app.route('/api/svm/predict', methods=['GET', 'POST'])
-def svm_predict_text():
-    if request.method == 'POST':
-        
-        data = request.get_json()
-        input_text = data.get('text', "")
-        predict_text = single_model_predict_text(input_text, "svm")
-        return jsonify(predict_text)
+
+@app.route('/api/<model>/predict', methods=['POST'])
+def sequential_predict_text(model):
     
+    models = ["logistic","svm","sequential","all_models"]
+    if model in models:
+        if request.method == 'POST':
+            
+            data = request.get_json()
+            input_text = data.get('text', "")
+            if model == "all_models":
+                prediction_object = multi_model_predict_text(input_text, input_type="api")
+                return jsonify({"multi_prediction": {
+                                    
+                                    'id':prediction_object.get_id(),
+                                    'text':prediction_object.get_text(), 
+                                    'prediction':prediction_object.get_prediction(), 
+                                    'accuracy':prediction_object.get_accuracy(),
+                                    'model_selected':prediction_object.get_model_selected(),
+                                    'logistic':prediction_object.get_model_vote("logistic"),
+                                    'SVM':prediction_object.get_model_vote("svm"),
+                                    'sequential':prediction_object.get_model_vote("sequential"),
+                                    'date':prediction_object.get_date()}
+                                
+                                })
+                                
+            else:
+                
+                prediction_object = single_model_predict_text(input_text, model, input_type="api")
+                
+                
+                return jsonify({"single_prediction": {
+                                                        "id": prediction_object.get_id(),
+                                                        "text": prediction_object.get_text(),
+                                                        "prediction": prediction_object.get_prediction(),
+                                                        "accuracy": prediction_object.get_accuracy(),
+                                                        "model_selected": prediction_object.get_model_selected(),
+                                                        "date": prediction_object.get_date()
+                                                        }
+                                })     
+        else:
+            return print("POST request required")
     else:
-        
-        predict_text = single_model_predict_text(fixed_text, "svm")
-        return jsonify({"Original Text": fixed_text, "SVM Results": predict_text})
+        return jsonify({"error": "Model not found. Available models: logistic, svm, sequential, all_models"})
 
 
-@app.route('/api/logistic/predict', methods=['GET', 'POST'])
-def logistic_predict_text():
-    if request.method == 'POST':
-
-        data = request.get_json()
-        input_text = data.get('text', "")        
-        predict_text = single_model_predict_text(input_text, "logistic")
-
-        return jsonify(predict_text)
-    else:
-        
-        predict_text = single_model_predict_text(fixed_text, "logistic")
-        return jsonify({"Original Text": fixed_text, "Logistic Model": predict_text})
-
-
-@app.route('/api/all_models/predict', methods=['GET', 'POST'])
-def all_models_predict_text():
-    if request.method == 'POST':
-        
-        data = request.get_json()
-        input_text = data.get('text', "")        
-        predict_text = single_model_predict_text(input_text, "all_models")
-
-        return jsonify(predict_text)
-    else:
-        predict_text = single_model_predict_text(fixed_text, "all_models")
-        return jsonify({"Original Text": fixed_text, "Best result från all Models": predict_text})
-    
 
 if __name__ == "__main__":
-    check_file_exists()
+    start_up_process(current_system)
     
     app.run(host='0.0.0.0', port=port, debug=True, use_reloader = False)
 

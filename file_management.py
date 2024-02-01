@@ -3,20 +3,16 @@ import os
 import pandas as pd
 from model import SinglePrediction, MultiPrediction
 import platform
+import shutil
 
 # Get the system's operating system
 os_system = platform.system()
 
 
 
-if os_system == 'Windows':
-    csv_encoder = 'cp1252'
+
     
-elif os_system == 'Darwin':
-    csv_encoder='utf-8'
-    
-else:
-    print("Running on a different operating system")
+
 
 
 
@@ -63,6 +59,76 @@ def fetch_from_csv(csv_file_path, group_id):
 
     return predictions
 
+
+
+def clear_folder(folder_path, limit):
+    
+    files = os.listdir(folder_path)
+
+    
+    if len(files) > limit:
+        print(f"Number of files ({len(files)}) exceeds the limit ({limit}). Clearing the folder...")
+        for file_name in files:
+            file_path = os.path.join(folder_path, file_name)
+            try:
+                if os.path.isfile(file_path):
+                    os.unlink(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+            except Exception as e:
+                print(f"Failed to delete {file_path}. Error: {e}")
+
+        print("Folder cleared.")
+    else:
+        print("Number of files within the limit. No action required.")
+
+
+def clear_csv_file(csv_path, limit):
+    
+    csv = pd.read_csv(csv_path)
+    
+
+    
+    if len(csv) > limit:
+        
+        print(f"Number of rows ({len(csv)}) exceeds the limit ({limit}). Clearing the folder...")
+        csv = pd.DataFrame(columns=csv.columns)
+        csv.to_csv(csv_path, index=False)
+        print("Folder cleared.")
+        
+    else:
+        print("Number of files within the limit. No action required.")
+
+
+
+
+def start_up_process(current_system:str)->None:
+    if current_system == 'heroku':
+        
+        all_model_images = "static/model_images/all_models_images"
+        single_model_images = "static/model_images/single_model_images"
+        file_predictions_multi_model = "stored_data/file_predictions_multi_model.csv"
+        file_predictions_single_model = "stored_data/file_predictions_single_model.csv"
+        text_predictions_multi_model = "stored_data/text_predictions_multi_model.csv"
+        text_predictions_single_model = "stored_data/text_predictions_single_model.csv"
+        
+        clear_folder(all_model_images, 10)
+        clear_folder(single_model_images, 10)
+        clear_csv_file(file_predictions_multi_model, 10000)
+        clear_csv_file(file_predictions_single_model, 10000)
+        clear_csv_file(text_predictions_multi_model, 10000)
+        clear_csv_file(text_predictions_single_model, 10000)
+        
+        check_file_exists()
+        
+    elif current_system == 'local':
+        
+        check_file_exists()
+    
+    else:
+        print("Error: Invalid system")
+    
+    return
 
 
 

@@ -1,9 +1,6 @@
 import datetime
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.stats import mode
-import os
-
 from formatting_functions import format_float
 plt.switch_backend('Agg')
 
@@ -130,13 +127,6 @@ class MultiPrediction:
         fig.savefig(save_path, format='png')
         return
     
-    
-    
-    
-    
-        
-    
-    
     def get_majority_prediction(self):
     
         true = 0
@@ -207,8 +197,6 @@ class MultiPrediction:
             
         list_of_votes.append(0 if self.prediction == "True" else 1)
         return list_of_votes
-
-
 
 
 class FilePrediction:
@@ -480,11 +468,3 @@ class FilePrediction:
         self.barplot_file_name = f"barplot_file_{date}.png"
         fig.savefig(save_path, format='png')
         return
-
-
-
-
-if __name__ == "__main__":
-
-    prediction = MultiPrediction()
-    print(prediction.get_identity())

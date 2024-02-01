@@ -102,34 +102,6 @@ def clear_csv_file(csv_path, limit):
 
 
 
-def start_up_process(current_system:str)->None:
-    if current_system == 'heroku':
-        
-        all_model_images = "static/model_images/all_models_images"
-        single_model_images = "static/model_images/single_model_images"
-        file_predictions_multi_model = "stored_data/file_predictions_multi_model.csv"
-        file_predictions_single_model = "stored_data/file_predictions_single_model.csv"
-        text_predictions_multi_model = "stored_data/text_predictions_multi_model.csv"
-        text_predictions_single_model = "stored_data/text_predictions_single_model.csv"
-        
-        clear_folder(all_model_images, 10)
-        clear_folder(single_model_images, 10)
-        clear_csv_file(file_predictions_multi_model, 10000)
-        clear_csv_file(file_predictions_single_model, 10000)
-        clear_csv_file(text_predictions_multi_model, 10000)
-        clear_csv_file(text_predictions_single_model, 10000)
-        
-        check_file_exists()
-        
-    elif current_system == 'local':
-        
-        check_file_exists()
-    
-    else:
-        print("Error: Invalid system")
-    
-    return
-
 
 
 def manage_csv_header(csv_file_path:str, create_from_path: bool=False,load_from_path:bool=False)->None|list:

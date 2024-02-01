@@ -1,11 +1,8 @@
 from model import MultiPrediction,FilePrediction
-from single_model_predict import preprocess_text, loaded_logistic_model,loaded_sequential_model,\
-    loaded_svm_model,loaded_tfidf_vectorizer,loaded_tokenizer
-
 from formatting_functions import format_float
 from keras.preprocessing.sequence import pad_sequences
-import numpy as np
-import matplotlib.pyplot as plt
+from single_model_predict import preprocess_text, loaded_logistic_model,loaded_sequential_model,\
+    loaded_svm_model,loaded_tfidf_vectorizer,loaded_tokenizer
 
 
 
@@ -41,8 +38,6 @@ def voter(true: tuple,fake: tuple)->tuple:
     prediction = [true,fake]
     return max(prediction, key=lambda x: x[1])
 
-
-
 def manually_classify_vote(percentage:float, binary:int):
     
     if binary == 0:
@@ -52,31 +47,22 @@ def manually_classify_vote(percentage:float, binary:int):
     
     
     
-    
-
-
 def multi_model_predict_text(texts: list|str,input_type:str,**kwargs)-> MultiPrediction | FilePrediction:
     
     if not isinstance(texts, list):
         texts = [texts]
     
-
-    
     model_names = ["logistic","svm","sequential"]
                         
-        
-    
     file_name = kwargs.get("file_name")
     new_id = kwargs.get("new_id")
     new_group_id = kwargs.get("new_group_id")
     if input_type == "api":
         new_id = "api"
     
-    
-    
     dict_of_preprocessed_texts = preprocess_for_specific_models(original_text=texts,
                                                                 models=model_names)
-   
+
     logistic_predictions = loaded_logistic_model.predict(dict_of_preprocessed_texts["logistic"])
     logistic_row_predictions = loaded_logistic_model.predict_proba(dict_of_preprocessed_texts["logistic"])
     logistic_predictions = logistic_predictions.reshape(-1, 1)
@@ -89,10 +75,6 @@ def multi_model_predict_text(texts: list|str,input_type:str,**kwargs)-> MultiPre
     sequential_predictions = sequential_predictions.reshape(-1, 1)
     sequential_predictions_binary = (sequential_predictions > 0.5).astype(int)
     
-    
-
-
-    
     if file_name:
         file_object = FilePrediction()
         file_object.group_id = new_group_id
@@ -103,7 +85,6 @@ def multi_model_predict_text(texts: list|str,input_type:str,**kwargs)-> MultiPre
                                                         ("SVM",svm_predictions),
                                                         ("Sequential",sequential_predictions_binary)]
         
-    
     
     for index in range(len(texts)):
     
@@ -133,15 +114,10 @@ def multi_model_predict_text(texts: list|str,input_type:str,**kwargs)-> MultiPre
             else:    
                 prediction_object.id = new_id
     
-    
-    
             prediction_object.get_majority_prediction()
     
     if not file_name:
-        
-        
         return prediction_object
-    
     
     file_object.file_total_score()
     file_object.bar_plot_for_file()

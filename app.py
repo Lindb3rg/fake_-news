@@ -1,4 +1,4 @@
-from file_management import check_file_exists, fetch_from_csv, manage_csv_header, get_file_properties, get_first_column_data, is_valid_csv, start_up_process
+from file_management import check_file_exists, fetch_from_csv, manage_csv_header, get_file_properties, get_first_column_data, is_valid_csv
 from multi_model_predict import multi_model_predict_text
 from single_model_predict import single_model_predict_text
 
